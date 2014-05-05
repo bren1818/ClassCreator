@@ -257,7 +257,7 @@ $(function(){
 				code.val( code.val() + tab(5) + '}');
 				
 				code.val( code.val() + tab(5) + 'if( is_array( $' + className.val().capitalize() + 's ) ){');
-					code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's');
+					code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's;');
 				code.val( code.val() + tab(5) + '}else{');
 					code.val( code.val() + tab(6) + 'return array();');
 				code.val( code.val() + tab(5) + '}');
