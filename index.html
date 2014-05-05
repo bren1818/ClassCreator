@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<title>
-		
+		Bren's Simple Class Creator
 	</title>
 	<link rel="stylesheet" href="css/style.css" />
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -18,14 +18,21 @@
 				<div class="col">
 					<h2>Class Creator</h2>
 					<p>Type in the variables you'll want your class to have. id, errors and connection will automatically be added</p>
-					<input type="text" name="className" id="className" placeholder="Class Name" value="" />
+					<input type="text" name="className" id="className" placeholder="Class Name" value="" /><br />
+					
+					<input type="radio" name="mode" value="simple" checked/>Simple Mode<br />
+					<!--<input type="radio" name="mode" value="form" />Form Mode-->
 					<textarea id="variables" style="width: 100%; min-height: 250px;" placeholder="Variables/properties of object seperated by new line"></textarea>
+					<div id="formMode">
+						Form Mode
+					</div>
 					<button id="generate">Generate Code</button>
 				</div>
 				
 				<div class="col">
 					<h2>Generated Class</h2>
 					<textarea id="generatedCode" style="width: 100%; min-height: 250px; display:none;"></textarea>
+					<h2>Table SQL</h2>
 					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
 				</div>
 				
