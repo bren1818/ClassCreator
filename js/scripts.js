@@ -208,7 +208,32 @@ $(function(){
 		code.val( code.val() + tab(2) + '}');
 		code.val( code.val() + '\r\n');
 		code.val( code.val() + newLine() );
+		
 		//delete function
+		code.val( code.val() + '\r\n\t\tfunction delete($id = null){');
+		code.val( code.val() + tab(3) + 'if( $this->connection ){');
+		code.val( code.val() + tab(4) + 'if( $id == null && $this->getId() != ""){');
+		code.val( code.val() + tab(5) + '$id = $this->getId();');
+		code.val( code.val() + tab(4) + '}');
+		code.val( code.val() + newLine() );
+		code.val( code.val() + tab(4) + '/*Perform Query*/');
+		code.val( code.val() + tab(4) + 'if( $id != "" ){');
+			code.val( code.val() + tab(5) + '$query = $this->connection->prepare("DELETE FROM `' + className.val().capitalize() + '` WHERE `id` = :id");');
+			code.val( code.val() + tab(5) + '$query->bindParam(\':id\', $id);');
+			code.val( code.val() + tab(5) + 'if( $query->execute() ){');
+				code.val( code.val() + tab(6) + 'return 1;');
+				
+			code.val( code.val() + tab(5) + '}else{');
+				code.val( code.val() + tab(6) + 'return 0;');
+			code.val( code.val() + tab(5) + '}');
+
+
+		code.val( code.val() + tab(4) + '}');
+		code.val( code.val() + tab(3) + '}');
+		code.val( code.val() + '\r\n\t\t}');
+		code.val( code.val() + newLine() );
+		
+		
 		
 		
 		
