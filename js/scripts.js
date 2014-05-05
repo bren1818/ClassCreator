@@ -43,9 +43,21 @@ $(function(){
 	});
 	
 	
+	var generatedCode, generatedSQL;
+	
 	
 	button.click(function(event){
 		var mode = $('input[name="mode"]').val();
+		if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
+			$( generatedCode.getWrapperElement() ).remove();
+		}
+		
+		if( typeof generatedSQL != "undefined" && $( generatedSQL.getWrapperElement() ).length ){
+			$( generatedSQL.getWrapperElement() ).remove();
+		}
+		
+		console.log( generatedCode );
+		console.log( generatedSQL );
 		
 		if( className.val() == ""){
 			window.alert("Please enter a class name");
@@ -181,25 +193,29 @@ $(function(){
 		for(var v=0; v < vars.length; v++){
 			if( vars[v] != "connection" && vars[v] != "errors" ){
 			code.val( code.val() + tab(5) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
-			code.val( code.val() + '\r\n' + tab(5) + 'if( $query->execute() ){');
-			code.val( code.val() + tab(6) + '$this->setId( $this->connection->lastInsertId() );');
-			code.val( code.val() + tab(6) + 'return $this->getId();');
-			code.val( code.val() + tab(5) + '}else{');
-			code.val( code.val() + tab(6) + 'return -1;');
-			code.val( code.val() + tab(5) + '}	');	
 			}
 		}
+		code.val( code.val() + '\r\n' + tab(5) + 'if( $query->execute() ){');
+		code.val( code.val() + tab(6) + '$this->setId( $this->connection->lastInsertId() );');
+		code.val( code.val() + tab(6) + 'return $this->getId();');
+		code.val( code.val() + tab(5) + '}else{');
+		code.val( code.val() + tab(6) + 'return -1;');
+		code.val( code.val() + tab(5) + '}	');	
+			
+		
 		code.val( code.val() + tab(4) + '}');
 		code.val( code.val() + tab(3) + '}');
 		code.val( code.val() + tab(2) + '}');
 		code.val( code.val() + '\r\n');
-		
-		
-		
 		code.val( code.val() + newLine() );
+		//delete function
+		
+		
+		
 		//listBy function
 		for(var v=0; v < vars.length; v++){
 			if( vars[v] != "connection" && vars[v] != "errors" ){
+				code.val( code.val() + newLine() );
 				code.val( code.val() + '\r\n\t\tfunction getListBy' +  vars[v].capitalize() +'($' +  vars[v] +'=null){');
 				code.val( code.val() + tab(3) + 'if( $this->connection ){');
 				code.val( code.val() + tab(4) + 'if( $' + vars[v] + ' == null && $this->get' + vars[v].capitalize() + '() != ""){');
@@ -207,6 +223,22 @@ $(function(){
 				code.val( code.val() + tab(4) + '}');
 				code.val( code.val() + newLine() );
 				code.val( code.val() + tab(4) + '/*Perform Query*/');
+				code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + '");');
+				code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
+				code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
+				
+				code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
+						code.val( code.val() + tab(6) + '$' + className.val().capitalize() + 's[] = $result;');
+				code.val( code.val() + tab(5) + '}');
+				
+				code.val( code.val() + tab(5) + 'if( is_array( $' + className.val().capitalize() + 's ) ){');
+					code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's');
+				code.val( code.val() + tab(5) + '}else{');
+					code.val( code.val() + tab(6) + 'return array();');
+				code.val( code.val() + tab(5) + '}');
+				
+				
+				code.val( code.val() + '\r\n' + tab(4) + '}');
 				
 				
 				code.val( code.val() + tab(3) + '}');
@@ -260,7 +292,7 @@ $(function(){
 		
 		
 		code.val( code.val() + '\r\n\t}\r\n?>');
-		code.trigger('autosize.resize');
+		//code.trigger('autosize.resize');
 		
 		/**************SQL TABLE CREATION**********************/
 		sql.show();
@@ -291,7 +323,42 @@ $(function(){
 		`bool` BOOLEAN NOT NULL
 		);
 		*/
-		sql.trigger('autosize.resize');
+		//sql.trigger('autosize.resize');
+		
+			generatedCode = CodeMirror.fromTextArea(document.getElementById("generatedCode"), {
+				lineNumbers: true,
+				matchBrackets: true,
+				mode: "text/x-php",
+				indentUnit: 4,
+				indentWithTabs: true,
+				extraKeys: { 
+					"F11": function(cm) {
+					  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+					},
+					"Esc": function(cm) {
+					  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+					},
+					"Ctrl-Space": "autocomplete"
+				}
+			});
+			
+			generatedSQL = CodeMirror.fromTextArea(document.getElementById("generatedSQL"), {
+				lineNumbers: true,
+				mode: "text/javascript", 
+				extraKeys: { 
+					"F11": function(cm) {
+					  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+					},
+					"Esc": function(cm) {
+					  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+					},
+					"Ctrl-Space": "autocomplete"
+				}
+			});
+		
+		
+		
+		
 	});
 	
 	$('textarea').autosize();   
