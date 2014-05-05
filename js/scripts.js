@@ -91,7 +91,7 @@ $(function(){
 		//Constructor
 		code.val( code.val() + '\r\n\t\t/*Constructor*/');
 		code.val( code.val() + '\r\n\t\tfunction __construct($databaseConnection=null){');
-		code.val( code.val() + '\r\n\t\t\treturn $this->connection = $databaseConnection;');
+		code.val( code.val() + '\r\n\t\t\t$this->connection = $databaseConnection;');
 		code.val( code.val() + '\r\n\t\t}');
 		code.val( code.val() + '\r\n');
 		
