@@ -191,8 +191,8 @@ $(function(){
 		code.val( code.val() + ');");');
 		
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" ){
-			code.val( code.val() + tab(5) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id"){
+				code.val( code.val() + tab(5) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
 			}
 		}
 		code.val( code.val() + '\r\n' + tab(5) + 'if( $query->execute() ){');
