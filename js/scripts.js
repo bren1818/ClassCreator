@@ -63,9 +63,9 @@ $(function(){
 			window.alert("Please enter a class name");
 			return;
 		}
-		var vars = ["id", "connection", "errors"];
-		var varsCheck = vars.slice(); //duplicate copy for use with checking variavles
-
+		var vars = ["id", "connection", "errors", "errorCount"];
+		var varsCheck = vars.slice(); //duplicate copy for use with checking variables
+		
 	
 		var lines = variables.val().split('\n');
 		for(var l = 0;l < lines.length;l++){
@@ -141,7 +141,7 @@ $(function(){
 		//get From Post
 		code.val( code.val() + '\r\n\t\tfunction getFromPost(){');
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount" ){
 				code.val( code.val() + tab(3) + '$this->set' + vars[v].capitalize() + '( (isset($_POST["' +  vars[v] + '"])) ? $_POST["' +  vars[v] + '"] : $this->get' +  vars[v].capitalize() + '() );');
 			}
 		
@@ -152,7 +152,7 @@ $(function(){
 		//Get From Request
 		code.val( code.val() + '\r\n\t\tfunction getFromRequest(){');
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount" ){
 				code.val( code.val() + tab(3) + '$this->set' + vars[v].capitalize() + '( (isset($_REQUEST["' +  vars[v] + '"])) ? $_REQUEST["' +  vars[v] + '"] : $this->get' +  vars[v].capitalize() + '() );');
 			}
 		
@@ -167,7 +167,7 @@ $(function(){
 		//save function
 		code.val( code.val() + '\r\n\t\tfunction save(){');
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount" ){
 				code.val( code.val() + '\r\n\t\t\t$' + vars[v] + ' = $this->get' + vars[v].capitalize() + '();');
 			}
 		}
@@ -175,16 +175,19 @@ $(function(){
 		code.val( code.val() + tab(4) + 'if( $id != "" ){');
 		/*Update Operation*/
 		code.val( code.val() + tab(5) + '/*Perform Update Operation*/' );
-		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("UPDATE  `' + className.val().capitalize() + ' SET ');
+		
+		if( vars.length > 4 ){
+		
+		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("UPDATE  `' + className.val().capitalize() + '` SET ');
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount"){
 				code.val( code.val() + '`' + vars[v] + '` = :' + vars[v]  + ' ');
 				if( (v + 1) != vars.length ){ code.val( code.val() + ',' ); }
 			}
 		}
 		code.val( code.val() + 'WHERE `id` = :id");');
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount" ){
 				code.val( code.val() + tab(5) + '$query->bindParam(\'' + vars[v] + '\', $' + vars[v] + ');');
 			}
 		}
@@ -195,21 +198,26 @@ $(function(){
 			code.val( code.val() + tab(6) + 'return -1;');
 		code.val( code.val() + tab(5) + '}');
 		code.val( code.val() + newLine() );
+		
+		}else{
+		code.val( code.val() + tab(5) + '/*No fields to update...*/' );
+		}
+		
 		code.val( code.val() + tab(4) + '}else{');
 		/*Insert Operation*/
 		code.val( code.val() + tab(5) + '/*Perform Insert Operation*/' );
 		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("INSERT INTO `' + className.val().capitalize() + '` (`id`');
-		if( vars.length > 3 ){ code.val( code.val() + ',' ); }
+		if( vars.length > 4 ){ code.val( code.val() + ',' ); }
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "id" && vars[v] != "connection" && vars[v] != "errors" ){
+			if( vars[v] != "id" && vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount" ){
 				code.val( code.val() + '`' + vars[v] + '`' );
 				if( (v + 1) != vars.length ){ code.val( code.val() + ',' ); }
 			}
 		}
 		code.val( code.val() + ') VALUES (NULL' );
-		if( vars.length > 3 ){ code.val( code.val() + ',' ); }
+		if( vars.length > 4 ){ code.val( code.val() + ',' ); }
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "id" && vars[v] != "connection" && vars[v] != "errors" ){
+			if( vars[v] != "id" && vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount" ){
 				code.val( code.val() + ':' + vars[v]  );
 				if( (v + 1) != vars.length ){ code.val( code.val() + ',' ); }
 			}
@@ -217,7 +225,7 @@ $(function(){
 		code.val( code.val() + ');");');
 		
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id"){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount"){
 				code.val( code.val() + tab(5) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
 			}
 		}
@@ -262,7 +270,7 @@ $(function(){
 		//Get By
 		
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors"){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"){
 				code.val( code.val() + '\r\n\t\tfunction getBy' + vars[v].capitalize() + '($' +  vars[v] + '){');
 				code.val( code.val() + tab(3) + 'if( $this->connection ){');
 				
@@ -296,7 +304,7 @@ $(function(){
 		
 		//listBy function
 		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" ){
+			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"  ){
 				code.val( code.val() + newLine() );
 				code.val( code.val() + '\r\n\t\tfunction getListBy' +  vars[v].capitalize() +'($' +  vars[v] +'=null){');
 				code.val( code.val() + tab(3) + 'if( $this->connection ){');
@@ -338,7 +346,7 @@ $(function(){
 					code.val( code.val() + tab(5) + '$class = get_class($this);');
 					code.val( code.val() + tab(5) + '$k = $key;');
 					code.val( code.val() + tab(5) + '$fkey = trim( str_replace( $class,"",$k));');
-					code.val( code.val() + tab(5) + 'if( $fkey == "connection" || $fkey == "errors" ){');
+					code.val( code.val() + tab(5) + 'if( $fkey == "connection" || $fkey == "errors" || $fkey == "errorCount" ){');
 						code.val( code.val() + tab(6) + '//dont add');
 					code.val( code.val() + tab(5) + '}else{');
 						code.val( code.val() + tab(6) + '$new[$fkey] = $this->toArray($val);');
@@ -368,9 +376,19 @@ $(function(){
 		code.val( code.val() + '\r\n\t\tfunction getClone(){');
 		code.val( code.val() + tab(3) + 'return clone($this);');
 		code.val( code.val() + '\r\n\t\t}');		
+		code.val( code.val() + newLine() );
 		
 		
-		
+		//printFormatted
+		code.val( code.val() + tab(2) + '/*Human readable print out of object*/');
+		code.val( code.val() + '\r\n\t\tfunction printFormatted($return=false){');
+		code.val( code.val() + tab(3) + 'if($return){');
+		code.val( code.val() + tab(4) + "return '<pre>'.print_r( $this->asArray(), true ).'</pre>';");
+		code.val( code.val() + tab(3) + '}else{');
+		code.val( code.val() + tab(4) + "echo '<pre>'.print_r( $this->asArray(), true ).'</pre>';");
+		code.val( code.val() + tab(3) + '}');
+		code.val( code.val() + '\r\n\t\t}');
+		code.val( code.val() + '\r\n');
 		
 		
 		code.val( code.val() + '\r\n\t}\r\n?>');
@@ -384,7 +402,7 @@ $(function(){
 		vars.remByVal("id");
 		vars.remByVal("connection");
 		vars.remByVal("errors");
-		
+		vars.remByVal("errorCount");
 		
 		if( vars.length > 1 ){ sql.val( sql.val() + ','); }
 		if( mode == "simple" ){
