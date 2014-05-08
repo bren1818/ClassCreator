@@ -268,75 +268,75 @@ $(function(){
 		code.val( code.val() + newLine() );
 		
 		//Get By
-		
-		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"){
-				code.val( code.val() + '\r\n\t\tfunction getBy' + vars[v].capitalize() + '($' +  vars[v] + '){');
-				code.val( code.val() + tab(3) + 'if( $this->connection ){');
-				
-				code.val( code.val() + tab(4) + 'if( $' + vars[v] + ' == null && $this->get' + vars[v].capitalize() + '() != ""){');
-				code.val( code.val() + tab(5) + '$' + vars[v] + ' = $this->get' + vars[v].capitalize() + '();');
-				code.val( code.val() + tab(4) + '}');
-				code.val( code.val() + newLine() );
-				code.val( code.val() + tab(4) + '/*Perform Query*/');
-				
-				code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + ' LIMIT 1");');
-				code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
-				code.val( code.val() + tab(4) + '$object = null;');
-				code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
-				
-				code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
-						code.val( code.val() + tab(6) + '$object = $result;');
-				code.val( code.val() + tab(5) + '}');
-				code.val( code.val() + '\r\n' + tab(4) + '}');
-				code.val( code.val() + tab(4) + 'if( is_object( $object ) ){');
-					code.val( code.val() + tab(5) + 'return $object;');
-				code.val( code.val() + tab(4) + '}');
-				code.val( code.val() + tab(3) + '}');
-				code.val( code.val() + '\r\n\t\t}');
-				code.val( code.val() + '\r\n');
+		if( $('input[name="includeGetby"]').prop("checked")  ){
+			for(var v=0; v < vars.length; v++){
+				if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"){
+					code.val( code.val() + '\r\n\t\tfunction getBy' + vars[v].capitalize() + '($' +  vars[v] + '){');
+					code.val( code.val() + tab(3) + 'if( $this->connection ){');
+					
+					code.val( code.val() + tab(4) + 'if( $' + vars[v] + ' == null && $this->get' + vars[v].capitalize() + '() != ""){');
+					code.val( code.val() + tab(5) + '$' + vars[v] + ' = $this->get' + vars[v].capitalize() + '();');
+					code.val( code.val() + tab(4) + '}');
+					code.val( code.val() + newLine() );
+					code.val( code.val() + tab(4) + '/*Perform Query*/');
+					
+					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + ' LIMIT 1");');
+					code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
+					code.val( code.val() + tab(4) + '$object = null;');
+					code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
+					
+					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
+							code.val( code.val() + tab(6) + '$object = $result;');
+					code.val( code.val() + tab(5) + '}');
+					code.val( code.val() + '\r\n' + tab(4) + '}');
+					code.val( code.val() + tab(4) + 'if( is_object( $object ) ){');
+						code.val( code.val() + tab(5) + 'return $object;');
+					code.val( code.val() + tab(4) + '}');
+					code.val( code.val() + tab(3) + '}');
+					code.val( code.val() + '\r\n\t\t}');
+					code.val( code.val() + '\r\n');
+				}
 			}
 		}
 		
-		
-		
-		
-		
-		//listBy function
-		for(var v=0; v < vars.length; v++){
-			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"  ){
-				code.val( code.val() + newLine() );
-				code.val( code.val() + '\r\n\t\tfunction getListBy' +  vars[v].capitalize() +'($' +  vars[v] +'=null){');
-				code.val( code.val() + tab(3) + 'if( $this->connection ){');
-				code.val( code.val() + tab(4) + 'if( $' + vars[v] + ' == null && $this->get' + vars[v].capitalize() + '() != ""){');
-				code.val( code.val() + tab(5) + '$' + vars[v] + ' = $this->get' + vars[v].capitalize() + '();');
-				code.val( code.val() + tab(4) + '}');
-				code.val( code.val() + newLine() );
-				code.val( code.val() + tab(4) + '/*Perform Query*/');
-				code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + '");');
-				code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
-				code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
-				
-				code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
-						code.val( code.val() + tab(6) + '$' + className.val().capitalize() + 's[] = $result;');
-				code.val( code.val() + tab(5) + '}');
-				
-				code.val( code.val() + tab(5) + 'if( is_array( $' + className.val().capitalize() + 's ) ){');
-					code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's;');
-				code.val( code.val() + tab(5) + '}else{');
-					code.val( code.val() + tab(6) + 'return array();');
-				code.val( code.val() + tab(5) + '}');
-				
-				
-				code.val( code.val() + '\r\n' + tab(4) + '}');
-				
-				
-				code.val( code.val() + tab(3) + '}');
-				code.val( code.val() + '\r\n\t\t}' );
+		if( $('input[name="includeListby"]').prop("checked")  ){
+			//listBy function
+			for(var v=0; v < vars.length; v++){
+				if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount"  ){
+					code.val( code.val() + newLine() );
+					code.val( code.val() + '\r\n\t\tfunction getListBy' +  vars[v].capitalize() +'($' +  vars[v] +'=null){');
+					code.val( code.val() + tab(3) + 'if( $this->connection ){');
+					code.val( code.val() + tab(4) + 'if( $' + vars[v] + ' == null && $this->get' + vars[v].capitalize() + '() != ""){');
+					code.val( code.val() + tab(5) + '$' + vars[v] + ' = $this->get' + vars[v].capitalize() + '();');
+					code.val( code.val() + tab(4) + '}');
+					code.val( code.val() + newLine() );
+					code.val( code.val() + tab(4) + '/*Perform Query*/');
+					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + '");');
+					code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
+					code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
+					
+					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
+							code.val( code.val() + tab(6) + '$' + className.val().capitalize() + 's[] = $result;');
+					code.val( code.val() + tab(5) + '}');
+					
+					code.val( code.val() + tab(5) + 'if( is_array( $' + className.val().capitalize() + 's ) ){');
+						code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's;');
+					code.val( code.val() + tab(5) + '}else{');
+						code.val( code.val() + tab(6) + 'return array();');
+					code.val( code.val() + tab(5) + '}');
+					
+					
+					code.val( code.val() + '\r\n' + tab(4) + '}');
+					
+					
+					code.val( code.val() + tab(3) + '}');
+					code.val( code.val() + '\r\n\t\t}' );
+				}
 			}
+			code.val( code.val() + newLine() );
 		}
 		
-		code.val( code.val() + newLine() );
+		
 		code.val( code.val() + tab(2) + '/*Return parameter (object) as Array*/');
 		code.val( code.val() + '\r\n\t\tfunction toArray ($obj=null) {');
 			code.val( code.val() + tab(3) + 'if (is_object($obj)) $obj = (array)$obj;');
