@@ -24,6 +24,188 @@ function newLine(){
 	return '\r\n';
 }
 
+function getType(type){
+	switch( type ){
+		default:
+		case "v":
+			var vl = $('input[name="defaultVarcharLength"]').val();
+			return "VARCHAR( " + vl + " )";
+		break;
+		case "i":
+			return "INTEGER";
+		break;
+		case "t":
+			return "TEXT";
+		break;
+		case "d":
+			return "DATE";
+		break;
+		case "c":
+			return "CHAR( 10 )";
+		break;
+		case "mt":
+			return "MEDIUMTEXT";
+		break;
+		case "lt":
+			return "LONGTEXT";
+		break;
+		case "dt":
+			return "DATETIME";
+		break;
+		case "ts":
+			return "TIMESTAMP";
+		break;
+		case "ti":
+			return "TIME";
+		break;
+		case "b":
+			return "BIT( 1 )";
+		break;
+		case "bool":
+			return "BOOLEAN";
+		break;
+	}
+}
+
+
+function addFormRow(){
+	$(function(){
+		var id = new Date().getTime();
+		var html = '<div id="formSection_' + id + '" class="formSection">' + 
+			'<div class="formRow">' + 
+				'<div class="item_variableName">' + 
+					'Variable name: <input type="text" name="label" value="" required="required"/>' +
+				'</div>' +
+				'<div class="item_label">' + 
+					'Label: <input type="text" name="label" value="" />' +
+				'</div>' + 
+				'<div class="item_type">' + 
+					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="telephone">telephone</option><option value="textarea">textarea</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="RegexText">Regex Text Group</option><option value="RepeatSection">Repeatable Section</option><option value="File">File</option></select>' + 
+				'</div>' + 
+				'<div class="item_required">' + 				
+					'Required: <input type="checkbox" name="item_required"/>' + 
+				'</div>' + 
+				'<div class="item_error" style="display: none">' + 
+					'Error Text: <input type="text" value="" />' +
+				'</div>' + 
+				'<div class="type_text">' + 
+					'Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
+				'</div>' + 
+				'<div class="type_number" style="display: none">' + 
+					'Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
+				'</div>' + 
+				'<div class="type_code" style="display: none">' + 
+				'	-code type' +  
+				'</div>' + 
+				'<div class="type_list" style="display: none">' + 
+					'<textarea class="list" placeholder="comma seperated list of items"></textarea>' +  
+				'</div>' + 
+				'<div class="type_repeat_section" style="display: none">' + 
+				'</div>' + 
+				//'<button id="addFormInput">Add Form Input</button>' + 
+			'</div>' + 
+			//'<button id="addFormInput">Add Form Section</button>' + 
+		'</div>';
+		$('#formMode').append(html);
+		$('#formSection_' + id + ' .item_type select').change(function(event){
+			var val = $(this).val();
+			switch( val ){
+				default:
+				case "text":
+					$('#formSection_' + id + ' .type_text').show();
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "number":
+				
+				
+					$('#formSection_' + id + ' .type_number').show();
+					$('#formSection_' + id + ' .type_text').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "email":
+				
+				
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_text').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "telephone":
+				
+				
+					$('#formSection_' + id + ' .type_text').hide();
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "textarea":
+				
+				
+					$('#formSection_' + id + ' .type_text').show();
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "wysiwyg":
+				
+					$('#formSection_' + id + ' .type_text').show();
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "code":
+				
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "checkbox":
+				
+				
+				
+				
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_text').hide();
+				break;
+				case "radioGroup":
+				case "checkGroup":
+				case "selectMultiple":
+				case "select":
+					
+					$('#formSection_' + id + ' .item_required').hide();
+					$('#formSection_' + id + ' .type_list').show();
+					$('#formSection_' + id + ' .type_text').hide();
+				break;
+				case "RegexText":
+				
+				
+					$('#formSection_' + id + ' .type_number').hide();
+					$('#formSection_' + id + ' .type_text').hide();
+				break;
+				case "RepeatSection":
+				
+					$('#formSection_' + id + ' .item_required').hide();
+					$('#formSection_' + id + ' .type_text').hide();
+					$('#formSection_' + id + ' .type_list').hide();
+				break;
+				case "File":
+					$('#formSection_' + id + ' .type_list').hide();
+					
+					
+				break;
+			}
+			console.log( val );
+		});
+		
+		$('#formSection_' + id + ' .item_required input[type="checkbox"]').click(function(event){
+			if( $(this).prop("checked") ){
+				$(this).closest('.formRow').find('.item_error').show();
+			}else{
+				$(this).closest('.formRow').find('.item_error').hide();
+			}
+		});
+
+
+	//return html;
+	});
+}
+
+
 $(function(){
 
 	var variables = $('#variables');
@@ -33,21 +215,28 @@ $(function(){
 	var sql = $('#generatedSQL');
 	
 	$('input[name="mode"]').change(function(event){
-		if( $(this).val() == "simple" ){
-			$('#variables').show();
-			$('#formMode').hide();
-		}else{
 			$('#variables').hide();
+			$('#formMode').hide();
+			$('#addFormInput').hide();
+			$('#advancedMode').hide();
+		if( $(this).val() == "simple" ||  $(this).val() == "advanced"){
+			$('#variables').show();
+			if(  $(this).val() == "advanced"){
+				$('#advancedMode').show();
+			}
+		}else{
 			$('#formMode').show();
+			$('#addFormInput').show();
 		}
 	});
 	
 	
-	var generatedCode, generatedSQL;
+	var generatedCode, generatedSQL, generatedConn;
 	
 	
 	button.click(function(event){
-		var mode = $('input[name="mode"]').val();
+		var mode = $('input[name="mode"]:checked').val();
+		var tableName = "";
 		if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
 			$( generatedCode.getWrapperElement() ).remove();
 		}
@@ -56,16 +245,18 @@ $(function(){
 			$( generatedSQL.getWrapperElement() ).remove();
 		}
 		
-		console.log( generatedCode );
-		console.log( generatedSQL );
+		//console.log( generatedCode );
+		//console.log( generatedSQL );
 		
 		if( className.val() == ""){
 			window.alert("Please enter a class name");
 			return;
+		}else{
+			tableName = className.val().toLowerCase().trim();
 		}
 		var vars = ["id", "connection", "errors", "errorCount"];
 		var varsCheck = vars.slice(); //duplicate copy for use with checking variables
-		
+		var types = [];
 	
 		var lines = variables.val().split('\n');
 		for(var l = 0;l < lines.length;l++){
@@ -79,12 +270,27 @@ $(function(){
 		code.show();
 		code.val( '<?php');
 		code.val( code.val() + '\r\n\t/*Class Generated by Brendon Irwin\'s Class Generator*/\r\n');
-		code.val( code.val() + '\r\n\tclass ' + className.val().capitalize() + '{' );
+		code.val( code.val() + '\r\n\tclass ' + tableName.capitalize() + '{' );
 		
-		for(var v=0; v < vars.length; v++){
-			code.val( code.val() + '\r\n\t\tprivate $' + vars[v] + ';');
+		if( mode == "simple" ){
+			for(var v=0; v < vars.length; v++){
+				code.val( code.val() + '\r\n\t\tprivate $' + vars[v] + ';');
+			}
+		}else{
+		
+			for(var v=0; v < vars.length; v++){
+				if( v > 3 ){
+					var temp = vars[v].split(",");
+					code.val( code.val() + '\r\n\t\tprivate $' + temp[0]  + ';');
+					vars[v] = temp[0];
+					types.push( temp[1] );	
+				}else{
+					code.val( code.val() + '\r\n\t\tprivate $' +  vars[v] + ';');
+				}
+			}
 		}
 		
+	
 		code.val( code.val() + '\r\n');
 		code.val( code.val() + '\r\n');
 
@@ -124,15 +330,15 @@ $(function(){
 		code.val( code.val() + newLine() );
 		code.val( code.val() + tab(4) + '/*Perform Query*/');
 		code.val( code.val() + tab(4) + 'if( $id != "" ){');
-			code.val( code.val() + tab(5) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `id` = :id");');
+			code.val( code.val() + tab(5) + '$query = $this->connection->prepare("SELECT * FROM `' + tableName + '` WHERE `id` = :id");');
 			code.val( code.val() + tab(5) + '$query->bindParam(\':id\', $id);');
 			code.val( code.val() + tab(5) + 'if( $query->execute() ){');
-				code.val( code.val() + tab(6) + '$' + className.val() + ' = $query->fetchObject("' + className.val().capitalize() + '");');
+				code.val( code.val() + tab(6) + '$' + tableName + ' = $query->fetchObject("' + tableName + '");');
 			code.val( code.val() + tab(5) + '}');
-			code.val( code.val() + tab(5) + 'if( is_object( $' + className.val() + ' ) ){');
-				code.val( code.val() + tab(6) + '$' + className.val() + '->setConnection( $this->connection );');
+			code.val( code.val() + tab(5) + 'if( is_object( $' + tableName + ' ) ){');
+				code.val( code.val() + tab(6) + '$' + tableName + '->setConnection( $this->connection );');
 			code.val( code.val() + tab(5) + '}');
-			code.val( code.val() + tab(5) + 'return $' + className.val()  + ';');
+			code.val( code.val() + tab(5) + 'return $' + tableName  + ';');
 		code.val( code.val() + tab(4) + '}');
 		code.val( code.val() + tab(3) + '}');
 		code.val( code.val() + '\r\n\t\t}');
@@ -178,7 +384,7 @@ $(function(){
 		
 		if( vars.length > 4 ){
 		
-		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("UPDATE  `' + className.val().capitalize() + '` SET ');
+		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("UPDATE  `' + tableName + '` SET ');
 		for(var v=0; v < vars.length; v++){
 			if( vars[v] != "connection" && vars[v] != "errors" && vars[v] != "id" && vars[v] != "errorCount"){
 				code.val( code.val() + '`' + vars[v] + '` = :' + vars[v]  + ' ');
@@ -206,7 +412,7 @@ $(function(){
 		code.val( code.val() + tab(4) + '}else{');
 		/*Insert Operation*/
 		code.val( code.val() + tab(5) + '/*Perform Insert Operation*/' );
-		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("INSERT INTO `' + className.val().capitalize() + '` (`id`');
+		code.val( code.val() + tab(5) + '$query = $this->connection->prepare("INSERT INTO `' + tableName + '` (`id`');
 		if( vars.length > 4 ){ code.val( code.val() + ',' ); }
 		for(var v=0; v < vars.length; v++){
 			if( vars[v] != "id" && vars[v] != "connection" && vars[v] != "errors" && vars[v] != "errorCount" ){
@@ -252,7 +458,7 @@ $(function(){
 		code.val( code.val() + newLine() );
 		code.val( code.val() + tab(4) + '/*Perform Query*/');
 		code.val( code.val() + tab(4) + 'if( $id != "" ){');
-			code.val( code.val() + tab(5) + '$query = $this->connection->prepare("DELETE FROM `' + className.val().capitalize() + '` WHERE `id` = :id");');
+			code.val( code.val() + tab(5) + '$query = $this->connection->prepare("DELETE FROM `' + tableName + '` WHERE `id` = :id");');
 			code.val( code.val() + tab(5) + '$query->bindParam(\':id\', $id);');
 			code.val( code.val() + tab(5) + 'if( $query->execute() ){');
 				code.val( code.val() + tab(6) + 'return 1;');
@@ -280,12 +486,12 @@ $(function(){
 					code.val( code.val() + newLine() );
 					code.val( code.val() + tab(4) + '/*Perform Query*/');
 					
-					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + ' LIMIT 1");');
+					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + tableName + '` WHERE `' + vars[v] + '` = :' + vars[v] + ' LIMIT 1");');
 					code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
 					code.val( code.val() + tab(4) + '$object = null;');
 					code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
 					
-					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
+					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + tableName + '") ){');
 							code.val( code.val() + tab(6) + '$object = $result;');
 					code.val( code.val() + tab(5) + '}');
 					code.val( code.val() + '\r\n' + tab(4) + '}');
@@ -311,16 +517,16 @@ $(function(){
 					code.val( code.val() + tab(4) + '}');
 					code.val( code.val() + newLine() );
 					code.val( code.val() + tab(4) + '/*Perform Query*/');
-					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + className.val().capitalize() + '` WHERE `' + vars[v] + '` = :' + vars[v] + '");');
+					code.val( code.val() + tab(4) + '$query = $this->connection->prepare("SELECT * FROM `' + tableName + '` WHERE `' + vars[v] + '` = :' + vars[v] + '");');
 					code.val( code.val() + tab(4) + '$query->bindParam(\':' +  vars[v] + '\', $' + vars[v] + ');');
 					code.val( code.val() + '\r\n' + tab(4) + 'if( $query->execute() ){');
 					
-					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + className.val().capitalize() + '") ){');
-							code.val( code.val() + tab(6) + '$' + className.val().capitalize() + 's[] = $result;');
+					code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + tableName + '") ){');
+							code.val( code.val() + tab(6) + '$' + tableName + 's[] = $result;');
 					code.val( code.val() + tab(5) + '}');
 					
-					code.val( code.val() + tab(5) + 'if( is_array( $' + className.val().capitalize() + 's ) ){');
-						code.val( code.val() + tab(6) + 'return $' + className.val().capitalize() + 's;');
+					code.val( code.val() + tab(5) + 'if( is_array( $' + tableName + 's ) ){');
+						code.val( code.val() + tab(6) + 'return $' + tableName + 's;');
 					code.val( code.val() + tab(5) + '}else{');
 						code.val( code.val() + tab(6) + 'return array();');
 					code.val( code.val() + tab(5) + '}');
@@ -396,7 +602,7 @@ $(function(){
 		
 		/**************SQL TABLE CREATION**********************/
 		sql.show();
-		sql.val('CREATE TABLE  `' + className.val().capitalize() + '` (');
+		sql.val('CREATE TABLE  `' + tableName + '` (');
 		sql.val( sql.val() + '\r\n`id` INT NULL DEFAULT NULL AUTO_INCREMENT PRIMARY KEY');
 		//remove the original pre-defined vars
 		vars.remByVal("id");
@@ -406,12 +612,23 @@ $(function(){
 		
 		if( vars.length > 1 ){ sql.val( sql.val() + ','); }
 		if( mode == "simple" ){
+			var vl = $('input[name="defaultVarcharLength"]').val();
 			for(var v=0; v < vars.length; v++){
-				sql.val( sql.val() + '\r\n' + '`' + vars[v] + '` VARCHAR( 55 )');
+				sql.val( sql.val() + '\r\n' + '`' + vars[v] + '` VARCHAR( ' + vl + ' )');
 				if( (v + 1) != vars.length ){ sql.val( sql.val() + ',' ); }
 			}
+		}else if( mode == "advanced" ){
+			for(var v=0; v < vars.length; v++){
+				sql.val( sql.val() + '\r\n' + '`' + vars[v] + '` ' + getType( types[v] ) );
+				if( (v + 1) != vars.length ){ sql.val( sql.val() + ',' ); }
+			}
+		
 		}
+		
+		
 		sql.val( sql.val() + '\r\n);');
+		
+		//console.log( types );
 		
 		/*
 		CREATE TABLE  `test` (
@@ -463,4 +680,21 @@ $(function(){
 	
 	$('textarea').autosize();   
 
+	
+	generatedConn = CodeMirror.fromTextArea(document.getElementById("generatedConn"), {
+		lineNumbers: true,
+		matchBrackets: true,
+		mode: "text/x-php",
+		indentUnit: 4,
+		indentWithTabs: true,
+		extraKeys: { 
+			"F11": function(cm) {
+			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Esc": function(cm) {
+			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			},
+			"Ctrl-Space": "autocomplete"
+		}
+	});
 });
