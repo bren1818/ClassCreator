@@ -126,7 +126,7 @@ date_default_timezone_set("America/New_York");
 
 function getConnection() {
 	$mode = 1;
-	if( $mode == 2 ){
+	if( $mode == 1 ){
 		$dbName = "localDB"; 			//Database Name
 		$dbUser = "localUser"; 			//Database User
 		$dbPass = "awesomePassword"; 	//Database Password

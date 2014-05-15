@@ -585,6 +585,55 @@ $(function(){
 		code.val( code.val() + newLine() );
 		
 		
+		code.val( code.val() + newLine() );
+		code.val( code.val() + tab(2) + '/*Echo array as CSV file*/');
+		code.val( code.val() + '\r\n\t\tfunction arrayToCSVFile($array, $filename="' + tableName + '.csv", $delmiter=","){');
+		code.val( code.val() + tab(3) + 'ob_clean();');
+		code.val( code.val() + tab(3) + "header('Content-Type: application/csv; charset=UTF-8');");
+		code.val( code.val() + tab(3) + "header('Content-Disposition: attachement; filename=\"'.$filename.'\";');");
+		code.val( code.val() + tab(3) + "$f = fopen('php://output', 'w');");
+		code.val( code.val() + tab(3) + "foreach ($array as $line) {");
+			code.val( code.val() + tab(4) + "fputcsv($f, $line, $delimiter);");
+		code.val( code.val() + tab(3) + "}");
+		code.val( code.val() + tab(3) + "exit;");
+		code.val( code.val() + '\r\n\t\t}');		
+		code.val( code.val() + newLine() );
+		
+		code.val( code.val() + newLine() );
+		code.val( code.val() + tab(2) + '/*getObjectsLikeThis - returns array*/');
+		code.val( code.val() + '\r\n\t\tfunction getObjectsLikeThis(){');
+		code.val( code.val() + tab(3) + 'if( $this->connection ){');
+		code.val( code.val() + tab(4) + '$buildQuery="SELECT * FROM `' + tableName +'` WHERE ";');
+		code.val( code.val() + tab(4) + '$numParams = 0;');
+		code.val( code.val() + tab(4) + '$values = array();');
+		code.val( code.val() + tab(4) + 'foreach ($this as $key => $value) {');
+		code.val( code.val() + tab(5) + 'if( $value != "" && $key != "id" && $key != "connection" && $key != "error" && $key != "errorCount"){');
+		code.val( code.val() + tab(6) + '$buildQuery.="`".$key."` = :value_".$numParams." AND ";');
+		code.val( code.val() + tab(6) + '$numParams++;');
+		code.val( code.val() + tab(6) + '$values[] = $value;');
+		code.val( code.val() + tab(5) + '}');
+		code.val( code.val() + tab(4) + '}');
+		code.val( code.val() + tab(4) + 'if( $numParams > 0 ){');
+		code.val( code.val() + tab(5) + '//remove last AND');
+		//code.val( code.val() + tab(5) + '$buildQuery = strrev(implode(strrev(""), explode("AND", strrev($buildQuery), 2)));');
+		code.val( code.val() + tab(5) + '$buildQuery = substr( $buildQuery , 0, (strlen($buildQuery) -4) );');
+		
+		code.val( code.val() + tab(5) + '$query = $this->connection->PREPARE($buildQuery);');
+		code.val( code.val() + tab(5) + 'for($i=0; $i < sizeof($numParams); $i++){');
+		code.val( code.val() + tab(6) + '$query->bindParam(":value_".$i, $values[$i]);');
+		code.val( code.val() + tab(5) + '}');
+		code.val( code.val() + tab(5) + 'if( $query->execute() ){');
+		code.val( code.val() + tab(6) + 'return $query->fetchAll();');
+		code.val( code.val() + tab(5) + '}');
+		
+		code.val( code.val() + tab(4) + '}');
+		
+		code.val( code.val() + tab(3) + '}');
+		code.val( code.val() + '\r\n\t\t}');		
+		code.val( code.val() + newLine() );
+		
+		
+		
 		//printFormatted
 		code.val( code.val() + tab(2) + '/*Human readable print out of object*/');
 		code.val( code.val() + '\r\n\t\tfunction printFormatted($return=false){');
