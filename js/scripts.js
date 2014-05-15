@@ -587,8 +587,19 @@ $(function(){
 		
 		code.val( code.val() + newLine() );
 		code.val( code.val() + tab(2) + '/*Echo array as CSV file*/');
-		code.val( code.val() + '\r\n\t\tfunction arrayToCSVFile($array, $filename="' + tableName + '.csv", $delmiter=","){');
+		code.val( code.val() + '\r\n\t\tfunction arrayToCSVFile($array, $filename="' + tableName + '.csv", $delimiter=",", $showHeader=true){');
 		code.val( code.val() + tab(3) + 'ob_clean();');
+		code.val( code.val() + tab(3) + 'if( !is_array($showHeader) && $showHeader == true){');
+			code.val( code.val() + tab(4) + '$header=array();');
+			code.val( code.val() + tab(4) + 'foreach( $array[0] as $key => $value){');	
+			code.val( code.val() + tab(5) + '$header[] = strtoupper($key);');
+			code.val( code.val() + tab(4) + '}');
+			code.val( code.val() + tab(4) + 'array_unshift($array, $header);');
+		code.val( code.val() + tab(3) + '}');
+		code.val( code.val() + tab(3) + 'if( is_array($showHeader) ){');
+			code.val( code.val() + tab(4) + 'array_unshift($array, $showHeader);');
+		code.val( code.val() + tab(3) + '}');
+		
 		code.val( code.val() + tab(3) + "header('Content-Type: application/csv; charset=UTF-8');");
 		code.val( code.val() + tab(3) + "header('Content-Disposition: attachement; filename=\"'.$filename.'\";');");
 		code.val( code.val() + tab(3) + "$f = fopen('php://output', 'w');");
@@ -623,7 +634,7 @@ $(function(){
 		code.val( code.val() + tab(6) + '$query->bindParam(":value_".$i, $values[$i]);');
 		code.val( code.val() + tab(5) + '}');
 		code.val( code.val() + tab(5) + 'if( $query->execute() ){');
-		code.val( code.val() + tab(6) + 'return $query->fetchAll();');
+		code.val( code.val() + tab(6) + 'return $query->fetchAll(PDO::FETCH_ASSOC);');
 		code.val( code.val() + tab(5) + '}');
 		
 		code.val( code.val() + tab(4) + '}');
