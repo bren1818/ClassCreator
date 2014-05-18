@@ -84,7 +84,8 @@
 						<b>ti</b> = TIME ex: 12:55:22 (HH:MM:SS)<br />
 						<b>y</b>  = YEAR ex: 2014<br />
 						<b>b</b> = BIT( 1 ) <br />
-						<b>bool</b> = BOOLEAN NOT NULL
+						<b>bool</b> = BOOLEAN NOT NULL<br />
+						<b>r (repeat)</b> [special syntax]  variable, r, (num times), type<br />
 						</p>
 					</div>
 					
