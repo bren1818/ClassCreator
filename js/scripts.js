@@ -296,8 +296,8 @@ $(function(){
 						//0 = name, 1 = r, 2, number times, 3, type
 						if( temp[2] != null && temp[3] != null ){
 							for(var c =0; c < parseInt( temp[2] ); c++ ){
-								vars.push( temp[0] + "" + c  );
-								varsCheck.push(  (temp[0] + "" + c  ).toLowerCase() );
+								vars.push( temp[0] + "" + parseInt(c + 1) );
+								varsCheck.push(  (temp[0] + "" + parseInt(c + 1)  ).toLowerCase() );
 								//code.val( code.val() + '\r\n\t\tprivate $' + temp[0]  + '_' + c + ';');
 								types.push( temp[3] );
 							}
