@@ -83,7 +83,8 @@ function addFormRow(){
 					'Label: <input type="text" name="label" value="" required="required"/>' +
 				'</div>' + 
 				'<div class="item_type">' + 
-					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="telephone">telephone</option><option value="textarea">textarea</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="RegexText">Regex Text Group</option><option value="RepeatSection">Repeatable Section</option><option value="File">File</option></select>' + 
+					//<option value="telephone">telephone</option>
+					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="RegexText">Regex Text Group</option><option value="RepeatSection">Repeatable Section</option><option value="File">File</option></select>' + 
 				'</div>' + 
 				'<div class="item_required">' + 				
 					'Required: <input type="checkbox" name="item_required"/>' + 
@@ -92,11 +93,9 @@ function addFormRow(){
 					'Error Text: <input type="text" value="" />' +
 				'</div>' + 
 				
-				
-				
-				'<div class="type_text type_number" style="display: none;">' + 
+				'<div class="type_text type_number type_textarea" style="display: none;">' + 
 					'Restrict input length: <input type="checkbox" name="item_restrictLength"/>' + 
-					'<div class="item_restrict_length">' +
+					'<div class="item_restrict_length" style="display: none;">' +
 						'Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
 					'</div>' +
 				'</div>' + 
@@ -157,10 +156,10 @@ function addFormRow(){
 				break;
 				case "textarea":
 				
-				
-					$('#formSection_' + id + ' .type_text').show();
-					$('#formSection_' + id + ' .type_number').hide();
+			
+					$('#formSection_' + id + ' .type_number').hide();		
 					$('#formSection_' + id + ' .type_list').hide();
+					$('#formSection_' + id + ' .type_text').show();
 				break;
 				case "wysiwyg":
 				
@@ -173,9 +172,6 @@ function addFormRow(){
 					$('#formSection_' + id + ' .type_list').hide();
 				break;
 				case "checkbox":
-				
-				
-				
 				
 					$('#formSection_' + id + ' .type_number').hide();
 					$('#formSection_' + id + ' .type_text').hide();
@@ -211,7 +207,7 @@ function addFormRow(){
 			
 			
 			
-			console.log( val );
+			//console.log( val );
 		});
 		
 		
@@ -268,10 +264,17 @@ function buildForm(){
 		var variable = $(this).find('.item_variableName input').val();
 		var type =  $(this).find('.item_type select option:selected').val();
 		var required = $(this).find('.item_required input').prop('checked');
-		var restrictLength = $(this).find('.item_restrict_length input').prop('checked');
+		var restrictLength = $(this).find('.type_text input[name="item_restrictLength"]').prop('checked');
 		var min = 0;
 		var max = 0;
 		var errText = $(this).find('.item_error input').val();
+		var restrictAmount =  $(this).find('.type_number input[name="item_restrictAmount"]').prop('checked');
+		var minAmount = 0;
+		var maxAmount = 0;
+		
+		if( variable == "" ){
+			return;
+		}
 		
 		if( errText == "" ){
 			if( required ){
@@ -282,21 +285,43 @@ function buildForm(){
 		if( restrictLength ){
 			min = $(this).find('.type_text input[name="min_length"]').val();
 			max = $(this).find('.type_text input[name="max_length"]').val();
-			errText += label + " must be between " + min + " and " + max + " characters in length.";
+			errText += label + " must be between " + min + " and " + max + " characters in length. ";
 		}
+		
+		
+		if( restrictAmount ){
+			minAmount = $(this).find('.type_number input[name="min_amount"]').val();
+			maxAmount = $(this).find('.type_number input[name="max_amount"]').val();
+			errText += label + " must have a value between " + min + " and " + max + ". ";
+		}
+		
 		
 		code.val( code.val() + tab(1) + '<div class="formRow">' );
 		code.val( code.val() + tab(2) + '<div class="rowLabel">' );
 		code.val( code.val() + tab(3) + '<label for="' + variable + '">' + label + ':' + (required ? '*' : '' ) + '</label>');
 		code.val( code.val() + tab(2) + '</div>' );
 		code.val( code.val() + tab(2) + '<div class="rowField">' );
+		
 		if( type == "text" ){
-			code.val( code.val() + tab(3) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (required ? 'pattern=".{' + min + ',' + max + '}" title="' + errText + '" required="required" ' : '' ) +'/>');
+			code.val( code.val() + tab(3) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}"' : '') + ' title="' + errText + '" ' +  (required ? 'required="required"' : '' ) + '/>');
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
-		}else if( type == "" ){
+		}else if( type == "number" ){
 			//number can be restricted by length and value
+			code.val( code.val() + tab(3) + '<input type="number" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '') +  (restrictAmount ? 'min="' + minAmount + '" max="' + maxAmount + '"' : '') +'/>');
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
+		}else if( type == "email" ){
 		
+			if( required ){
+				errText = label + " is a required field. ";
+			}
 		
+			code.val( code.val() + tab(3) + '<input type="email" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (required ? '" required="required" title="' + errText + '"' : '')  + '/>');
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if( type == "textarea" ){
+			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required"' : '') + (restrictLength ? 'pattern=".{' + min + ',' + max + '}"' : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
+		
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'mt');
 		}
 		
 		
