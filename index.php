@@ -48,6 +48,18 @@
 		}
 		
 		input[type="text"]{ padding-left: 5px; }
+		
+		#preview{
+			padding: 10px;
+		}
+		
+		#preview > form .formRow{
+			border: none;
+		}
+		
+		#preview > form{
+			border: 1px solid #000;
+		}
 	</style>
 	
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -130,7 +142,7 @@
 					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
 					<p>Select editor and press F11 for full screen</p>
 					
-					<h2>Form PHP</h2>
+					<h2>Generated Form</h2>
 					<textarea id="generatedFORM" style="width: 100%; min-height: 50px; display:none;"></textarea>
 					
 					<h2>Default DB Driver for connection (passed into object)</h2>

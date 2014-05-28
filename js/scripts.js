@@ -92,16 +92,24 @@ function addFormRow(){
 					'Error Text: <input type="text" value="" />' +
 				'</div>' + 
 				
-				'<div class="item_restrict_length">' +
-					'Restrict input length: <input type="checkbox" name="item_restrictLength"/>' + 
-				'</div>' +
 				
-				'<div class="type_text" style="display: none;">' + 
-					'Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
+				
+				'<div class="type_text type_number" style="display: none;">' + 
+					'Restrict input length: <input type="checkbox" name="item_restrictLength"/>' + 
+					'<div class="item_restrict_length">' +
+						'Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
+					'</div>' +
 				'</div>' + 
+				
 				'<div class="type_number" style="display: none">' + 
-					'Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
+					'Restrict input amount: <input type="checkbox" name="item_restrictAmount"/>' + 
+					'<div class="item_restrict_amount" style="display: none">' +
+						'Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
+					'</div>' +
+					
 				'</div>' + 
+				
+				
 				'<div class="type_code" style="display: none">' + 
 				'	-code type' +  
 				'</div>' + 
@@ -120,16 +128,18 @@ function addFormRow(){
 			switch( val ){
 				default:
 				case "text":
-					$('#formSection_' + id + ' .type_text').show();
+					
 					$('#formSection_' + id + ' .type_number').hide();
 					$('#formSection_' + id + ' .type_list').hide();
+					$('#formSection_' + id + ' .type_text').show();
 				break;
 				case "number":
 				
 				
-					$('#formSection_' + id + ' .type_number').show();
+					
 					$('#formSection_' + id + ' .type_text').hide();
 					$('#formSection_' + id + ' .type_list').hide();
+					$('#formSection_' + id + ' .type_number').show();
 				break;
 				case "email":
 				
@@ -204,13 +214,28 @@ function addFormRow(){
 			console.log( val );
 		});
 		
-		$('#formSection_' + id + ' .item_restrict_length input[type="checkbox"]').click(function(event){
+		
+		$('#formSection_' + id + ' .type_text').show(); //default
+		
+		//text restriction
+		$('#formSection_' + id + ' .type_text input[name="item_restrictLength"]').click(function(event){
 			if( $(this).prop("checked") ){
-				$(this).closest('.formRow').find('.type_text').show();
+				$(this).closest('.formRow').find('.item_restrict_length').show();
 			}else{
-				$(this).closest('.formRow').find('.type_text').hide();
+				$(this).closest('.formRow').find('.item_restrict_length').hide();
 			}
 		});
+
+		//number restriction
+		$('#formSection_' + id + ' .type_number input[name="item_restrictAmount"]').click(function(event){
+			if( $(this).prop("checked") ){
+				$(this).closest('.formRow').find('.item_restrict_amount').show();
+			}else{
+				$(this).closest('.formRow').find('.item_restrict_amount').hide();
+			}
+		});
+
+
 		
 		$('#formSection_' + id + ' .item_required input[type="checkbox"]').click(function(event){
 			if( $(this).prop("checked") ){
@@ -264,11 +289,17 @@ function buildForm(){
 		code.val( code.val() + tab(2) + '<div class="rowLabel">' );
 		code.val( code.val() + tab(3) + '<label for="' + variable + '">' + label + ':' + (required ? '*' : '' ) + '</label>');
 		code.val( code.val() + tab(2) + '</div>' );
-		code.val( code.val() + tab(1) + '<div class="rowField">' );
+		code.val( code.val() + tab(2) + '<div class="rowField">' );
 		if( type == "text" ){
-			code.val( code.val() + tab(2) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo $' + frmName + '->get' + variable.capitalize() + '(); ?>" ' + (required ? 'pattern=".{' + min + ',' + max + '}" title="' + errText + '" required="required" ' : '' ) +'/>');
+			code.val( code.val() + tab(3) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (required ? 'pattern=".{' + min + ',' + max + '}" title="' + errText + '" required="required" ' : '' ) +'/>');
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if( type == "" ){
+			//number can be restricted by length and value
+		
+		
 		}
+		
+		
 		code.val( code.val() + tab(2) + '</div>' );
 		
 		
@@ -277,12 +308,14 @@ function buildForm(){
 		console.log(label,variable,type, required, restrictLength, errText, min, max);
 		
 		//set the class creator to 
-		$('input[name="mode"][value="advanced"]').prop("checked", true);
-		$('#generate').click();
+		
 		
 	});
-	
+	code.val( code.val() + tab(1) + '<input type="submit" value="SUBMIT" />' );
 	code.val( code.val() + tab(0) + '</form>' );
+	
+	$('#preview').html( code.val() );
+	
 	
 	var generatedForm;
 	
@@ -299,6 +332,9 @@ function buildForm(){
 			"Ctrl-Space": "autocomplete"
 		}
 	});
+	
+	$('input[name="mode"][value="advanced"]').prop("checked", true);
+	$('#generate').click();
 
 }
 
