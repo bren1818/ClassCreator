@@ -180,10 +180,10 @@ function addFormRow(){
 				case "checkGroup":
 				case "selectMultiple":
 				case "select":
-					
-					$('#formSection_' + id + ' .item_required').hide();
-					$('#formSection_' + id + ' .type_list').show();
 					$('#formSection_' + id + ' .type_text').hide();
+					$('#formSection_' + id + ' .item_required').show();
+					$('#formSection_' + id + ' .type_list').show();
+					
 				break;
 				case "RegexText":
 				
@@ -292,7 +292,7 @@ function buildForm(){
 		if( restrictAmount ){
 			minAmount = $(this).find('.type_number input[name="min_amount"]').val();
 			maxAmount = $(this).find('.type_number input[name="max_amount"]').val();
-			errText += label + " must have a value between " + min + " and " + max + ". ";
+			errText += label + " must have a value between " + minAmount + " and " + maxAmount + ". ";
 		}
 		
 		
@@ -303,25 +303,44 @@ function buildForm(){
 		code.val( code.val() + tab(2) + '<div class="rowField">' );
 		
 		if( type == "text" ){
+			/*Input type text*/
 			code.val( code.val() + tab(3) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}"' : '') + ' title="' + errText + '" ' +  (required ? 'required="required"' : '' ) + '/>');
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		}else if( type == "number" ){
-			//number can be restricted by length and value
+			/*Number */
 			code.val( code.val() + tab(3) + '<input type="number" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '') +  (restrictAmount ? 'min="' + minAmount + '" max="' + maxAmount + '"' : '') +'/>');
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
 		}else if( type == "email" ){
-		
+			/*Email - essentially same as input*/
 			if( required ){
 				errText = label + " is a required field. ";
 			}
-		
-			code.val( code.val() + tab(3) + '<input type="email" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (required ? '" required="required" title="' + errText + '"' : '')  + '/>');
+			code.val( code.val() + tab(3) + '<input type="email" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '')  + '/>');
 			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		}else if( type == "textarea" ){
-			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required"' : '') + (restrictLength ? 'pattern=".{' + min + ',' + max + '}"' : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
-		
+			/*Textarea*/
+			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required" ' : '') + (restrictLength ? ' maxlength=' + max + ' minlength=' + min : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'mt');
+		}else if(type == "select"){
+			var vals =  $(this).find('.type_list textarea').val();
+			var valStr = "";
+			vals = vals.split(",");
+			for(var v=0; v < vals.length; v++){
+				valStr += '"' + vals[v] + '"';
+				if( ((v + 1) < vals.length) ){
+				valStr += ', '
+				}
+			}
+			
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_selected = (isset( $' + frmName + '->get' + variable.capitalize() + '() ) ? $' + frmName + '->get' + variable.capitalize() + '() : ""); ?>');
+			code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
+			code.val( code.val() + tab(4) + '<?php for($v=0; $v < sizeof($' + variable + '_values); $v++){ ?>');
+			code.val( code.val() + tab(5) + '<option value="<?php echo $v; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
+			
+			code.val( code.val() + tab(4) + '<?php } ?>');
+			code.val( code.val() + tab(3) + '</select>');
 		}
 		
 		
