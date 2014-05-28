@@ -34,6 +34,20 @@
 			border-top: none;
 		}
 		
+		
+		input:invalid,
+		input:required {
+			box-shadow: 3px 1px 5px rgba(200, 0, 0, 0.85);
+			border: 1px solid rgb(200,0,0);
+		}
+		
+		input:valid{
+			box-shadow: none;
+			background-repeat: no-repeat;
+			border: 1px solid #0f0;
+		}
+		
+		input[type="text"]{ padding-left: 5px; }
 	</style>
 	
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -61,13 +75,13 @@
 				<div class="col">
 					<h2>Bren's Simple Class Creator</h2>
 					<p>Type in the variables you'll want your class to have. id, errors and connection will automatically be added</p>
-					<input type="text" name="className" id="className" placeholder="Class Name" value="" /><br />
+					<input type="text" name="className" id="className" placeholder="Class Name" value="" pattern=".{5,}" title="This needs to be filled in, min of 5 characters" required="required"/><br />
 					
 					
 					<br />
 					<input type="radio" name="mode" value="simple" checked/>Simple Mode<br />
 					<input type="radio" name="mode" value="advanced" />Advanced Mode<br />
-					<input type="radio" name="mode" value="form" disabled="disabled"/>Form Mode (incomplete)
+					<input type="radio" name="mode" value="form" />Form Mode (incomplete)
 					
 					
 					<div id="advancedMode" style="display:none; line-height: 1em;">
@@ -99,7 +113,7 @@
 					</div>
 					<div class="clear"></div>
 					<button id="addFormInput" style="display: none;" onClick="addFormRow()">Add Form Section</button>
-					
+					<br />
 					<input type="checkbox" name="includeListby" value="1" /> Include List by Function<br />
 					<input type="checkbox" name="includeGetby" value="1" /> Include Get by Function (limit 1)<br />
 					Default varchar: <input type="number" name="defaultVarcharLength" id="defaultVarcharLength" min=1" value="45" />
@@ -115,10 +129,10 @@
 					<h2>Table SQL</h2>
 					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
 					<p>Select editor and press F11 for full screen</p>
-					<!--
+					
 					<h2>Form PHP</h2>
-					<textarea id="generatedPHP" style="width: 100%; min-height: 50px; display:none;"></textarea>
-					--->
+					<textarea id="generatedFORM" style="width: 100%; min-height: 50px; display:none;"></textarea>
+					
 					<h2>Default DB Driver for connection (passed into object)</h2>
 <textarea id="generatedConn">
 &lt;?php
@@ -162,6 +176,13 @@ $someClass = $someClass->load( $someID );
 ?&gt;
 </textarea>
 				</div>
+				
+				
+				<div id="preview"></div>
+				
+				
+				
+				
 				
 				<div class="clear"></div>
 				<p>Check out this Git Project here: <a target="_blank" href="https://github.com/bren1818/ClassCreator.git">https://github.com/bren1818/ClassCreator.git</a></p>
