@@ -245,6 +245,12 @@ textarea{
 	position:relative;
 	top:1px;
 }
+
+.item_restrict_dates{
+	width: 100%;
+
+}
+
 </style>
 </textarea>
 					

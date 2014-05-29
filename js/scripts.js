@@ -86,8 +86,8 @@ function addFormRow(){
 				'</div>' + 
 				
 				'<div class="item_type">' + 
-					//<option value="telephone">telephone</option>
-					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="pattern">Input Pattern</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="File">File</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option></select>' + 
+					//<option value="telephone">telephone</option><option value="File">File</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option>
+					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="pattern">Input Pattern</option><option value="date">Date</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option></select>' + 
 				'</div>' + 
 				
 				'<div class="item_required">' + 				
@@ -97,6 +97,23 @@ function addFormRow(){
 				'<div class="item_error" style="display: none">' + 
 					'Error Text: <input type="text" value="" />' +
 				'</div>' + 
+				
+				'<div class="item_date" style="display: none"> Date: ' +
+					/*
+					$('#birthday, #dateResidency').datepicker({
+						changeMonth: true,
+						changeYear: true,
+						dateFormat: 'dd/mm/yy',
+						yearRange: "-65y:-15y",
+						defaultDate: new Date(1970, 00, 01)
+					});
+					*/
+					'Restrict Dates : <input type="checkbox" name="item_restrictDates"/>' + 
+					'<div class="item_restrict_dates" style="display: none;">' +
+						'<label>Start Year (0 for current year): <input name="startYr" type="number" value="0" placeholder="YYYY" /></label><br />' +
+						'<label>Cur Year (=/-) : <input name="from" type="number" value="0"/></label> to: <br /><label>Cur Year (=/-): <input name="to" type="number" value="0" /></label>' +
+					'</div>' +
+				'</div>' +
 				
 				'<div class="type_text type_number type_textarea" style="display: none;">' + 
 					'Restrict input length: <input type="checkbox" name="item_restrictLength"/>' + 
@@ -140,6 +157,7 @@ function addFormRow(){
 				$('#formSection_' + id + ' .type_text').hide();
 				$('#formSection_' + id + ' .type_pattern').hide();
 				$('#formSection_' + id + ' .item_required').show();
+				$('#formSection_' + id + ' item_date').hide();
 			switch( val ){
 				default:
 				case "text":
@@ -161,11 +179,17 @@ function addFormRow(){
 
 				break;
 				case "checkbox":
-				
-
+			
+				break;
+				case "date":
+					
+					$('#formSection_' + id + ' .item_date').show();
+				break;
+				case "checkGroup":
+					$('#formSection_' + id + ' .item_required').hide();
+					$('#formSection_' + id + ' .type_list').show();
 				break;
 				case "radioGroup":
-				case "checkGroup":
 				case "selectMultiple":
 					$('#formSection_' + id + ' .type_list').show();
 				break;
@@ -186,10 +210,7 @@ function addFormRow(){
 				break;
 			}
 			
-			
-			
-			
-			//console.log( val );
+
 		});
 		
 		
@@ -223,8 +244,16 @@ function addFormRow(){
 			}
 		});
 
+		
+		$('#formSection_' + id + ' .item_date input[type="checkbox"]').click(function(event){
+			if( $(this).prop("checked") ){
+				$(this).closest('.formRow').find('.item_restrict_dates').show();
+			}else{
+				$(this).closest('.formRow').find('.item_restrict_dates').hide();
+			}
+		});
 
-	//return html;
+	
 	});
 }
 
@@ -243,7 +272,7 @@ function buildForm(){
 	code.val(  code.val() + tab(1) + '$conn = null; //set to DB Conn');
 	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + frmName.capitalize() + '($conn); ');
 	code.val(  code.val() + tab(1) + 'if(strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {');
-	code.val(  code.val() + tab(1) + '$' + frmName + '->getFromPost();');
+	code.val(  code.val() + tab(2) + '$' + frmName + '->getFromPost();');
 	code.val(  code.val() + tab(1) + '}');
 	code.val(  code.val() + tab(0) + '?>' );
 	
@@ -263,6 +292,9 @@ function buildForm(){
 		var minAmount = 0;
 		var maxAmount = 0;
 		var pattern =  $(this).find('.type_pattern textarea').val();
+		
+		var restrictDate= $(this).find('.item_date input[name="item_restrictDates"]').prop('checked');
+		
 		
 		if( variable == "" ){
 			return;
@@ -356,11 +388,8 @@ function buildForm(){
 				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
 			code.val( code.val() + tab(3) + '} ?>');
 			
-			
-		
 			code.val( code.val() + tab(3) + '<input type="checkbox" id="' + variable + '" name="' + variable + '" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' value="1" <?php if($' + variable + '_selected == 1 ){ echo "checked"; } ?> />');
 
-			
 			//variable length should be size of largest option
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		}else if(type == "pattern" ){
@@ -407,9 +436,6 @@ function buildForm(){
 			
 			}else if( type == "checkGroup" ){
 				
-				//hide 
-				$('#formSection_' + id + ' .item_required').hide();
-				
 				code.val( code.val() + tab(3) + '<?php for($sm = 0; $sm < sizeof( $' + variable + '_values); $sm++){ ?>');
 				code.val( code.val() + tab(4) + '<?php $function = "get' +  variable.capitalize() + '_' + '".$sm; ?>');
 				
@@ -427,14 +453,29 @@ function buildForm(){
 			
 				code.val( code.val() + tab(3) + '<?php } ?>');
 			
-			
-	
-	
-			
 				variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 			}
 			
 		
+		}else if(type == "date"){
+			//pattern="\d{1,2}/\d{1,2}/\d{4}"
+			//(mm/dd/yyyy)
+			errText = errText + " Date should be in format mm\/dd\/yyyy";
+			
+			code.val( code.val() + tab(3) + '<label>(mm/dd/yyyy) <input class="dateInput" type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" title="' + errText + '" ' +  (required ? 'required="required"' : '' ) + ' pattern="\d{1,2}/\d{1,2}/\d{4}" /></label>');
+			
+			if( restrictDate ){
+				var startYr = $(this).find('.item_date input[name="startYr"]').val();
+				var From = $(this).find('.item_date input[name="from"]').val();
+				var To = $(this).find('.item_date input[name="to"]').val();
+			
+				//to do
+			
+			}
+			
+			
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		}
 		
 		
@@ -457,7 +498,7 @@ function buildForm(){
 	code.val( code.val() + tab(1) + '</div>');
 	code.val( code.val() + tab(0) + '</form>' );
 	
-	$('#preview').html( code.val() );
+	//$('#preview').html( code.val() );
 	
 	
 	var generatedForm;
