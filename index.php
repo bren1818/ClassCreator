@@ -19,6 +19,7 @@
 			display: block;
 			min-height: 40px;
 			padding: 0px 1%;
+			clear: both;
 		}
 		
 		.formRow{

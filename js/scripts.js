@@ -76,19 +76,24 @@ function addFormRow(){
 		var id = new Date().getTime();
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
 			'<div class="formRow">' + 
+			
 				'<div class="item_variableName">' + 
 					'Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/>' +
 				'</div>' +
+				
 				'<div class="item_label">' + 
 					'Label: <input type="text" name="label" value="" required="required"/>' +
 				'</div>' + 
+				
 				'<div class="item_type">' + 
 					//<option value="telephone">telephone</option>
-					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="RegexText">Regex Text Group</option><option value="RepeatSection">Repeatable Section</option><option value="File">File</option></select>' + 
+					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="pattern">Input Pattern</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option><option value="File">File</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option></select>' + 
 				'</div>' + 
+				
 				'<div class="item_required">' + 				
 					'Required: <input type="checkbox" name="item_required"/>' + 
 				'</div>' + 
+				
 				'<div class="item_error" style="display: none">' + 
 					'Error Text: <input type="text" value="" />' +
 				'</div>' + 
@@ -105,101 +110,77 @@ function addFormRow(){
 					'<div class="item_restrict_amount" style="display: none">' +
 						'Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
 					'</div>' +
-					
 				'</div>' + 
 				
 				
 				'<div class="type_code" style="display: none">' + 
-				'	-code type' +  
+			
 				'</div>' + 
+				
 				'<div class="type_list" style="display: none">' + 
 					'<textarea class="list" placeholder="comma seperated list of items"></textarea>' +  
 				'</div>' + 
+				
 				'<div class="type_repeat_section" style="display: none">' + 
+				
 				'</div>' + 
-				//'<button id="addFormInput">Add Form Input</button>' + 
+				
+				'<div class="type_pattern" style="display: none">' +
+					'<p>Input a Regex pattern: eg: "[\+]{0,1}?\d{0,1}?[\(]{0,1}?\d{3}[\)]{0,1}?\d{3}[\-]{0,1}?\d{4}" for a phone number</p>' +
+					'<textarea></textarea>' +
+				'</div>' +
 			'</div>' + 
-			//'<button id="addFormInput">Add Form Section</button>' + 
+			
 		'</div>';
 		$('#formMode').append(html);
 		$('#formSection_' + id + ' .item_type select').change(function(event){
 			var val = $(this).val();
+				$('#formSection_' + id + ' .type_number').hide();
+				$('#formSection_' + id + ' .type_list').hide();
+				$('#formSection_' + id + ' .type_text').hide();
+				$('#formSection_' + id + ' .type_pattern').hide();
 			switch( val ){
 				default:
 				case "text":
-					
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_list').hide();
 					$('#formSection_' + id + ' .type_text').show();
 				break;
 				case "number":
-				
-				
-					
-					$('#formSection_' + id + ' .type_text').hide();
-					$('#formSection_' + id + ' .type_list').hide();
 					$('#formSection_' + id + ' .type_number').show();
 				break;
 				case "email":
 				
-				
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_text').hide();
-					$('#formSection_' + id + ' .type_list').hide();
-				break;
-				case "telephone":
-				
-				
-					$('#formSection_' + id + ' .type_text').hide();
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_list').hide();
 				break;
 				case "textarea":
-				
-			
-					$('#formSection_' + id + ' .type_number').hide();		
-					$('#formSection_' + id + ' .type_list').hide();
 					$('#formSection_' + id + ' .type_text').show();
 				break;
 				case "wysiwyg":
 				
-					$('#formSection_' + id + ' .type_text').show();
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_list').hide();
 				break;
 				case "code":
-				
-					$('#formSection_' + id + ' .type_list').hide();
+
 				break;
 				case "checkbox":
 				
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_text').hide();
+
 				break;
 				case "radioGroup":
 				case "checkGroup":
 				case "selectMultiple":
-				case "select":
-					$('#formSection_' + id + ' .type_text').hide();
-					$('#formSection_' + id + ' .item_required').show();
 					$('#formSection_' + id + ' .type_list').show();
-					
 				break;
-				case "RegexText":
-				
-				
-					$('#formSection_' + id + ' .type_number').hide();
-					$('#formSection_' + id + ' .type_text').hide();
+				case "select":
+					$('#formSection_' + id + ' .type_list').show();
 				break;
 				case "RepeatSection":
 				
-					$('#formSection_' + id + ' .item_required').hide();
-					$('#formSection_' + id + ' .type_text').hide();
-					$('#formSection_' + id + ' .type_list').hide();
+
 				break;
 				case "File":
-					$('#formSection_' + id + ' .type_list').hide();
 					
+					
+				break;
+				case "pattern":
+					$('#formSection_' + id + ' .type_pattern').show();
 					
 				break;
 			}
@@ -261,7 +242,7 @@ function buildForm(){
 	
 	$('#formMode .formSection').each(function(){
 		var label = $(this).find('.item_label input').val();
-		var variable = $(this).find('.item_variableName input').val();
+		var variable = $(this).find('.item_variableName input').val().replace(/\s+/g, ' ');
 		var type =  $(this).find('.item_type select option:selected').val();
 		var required = $(this).find('.item_required input').prop('checked');
 		var restrictLength = $(this).find('.type_text input[name="item_restrictLength"]').prop('checked');
@@ -271,6 +252,7 @@ function buildForm(){
 		var restrictAmount =  $(this).find('.type_number input[name="item_restrictAmount"]').prop('checked');
 		var minAmount = 0;
 		var maxAmount = 0;
+		var pattern =  $(this).find('.type_pattern textarea').val();
 		
 		if( variable == "" ){
 			return;
@@ -319,10 +301,17 @@ function buildForm(){
 			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		}else if( type == "textarea" ){
+		
 			/*Textarea*/
+			
 			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required" ' : '') + (restrictLength ? ' maxlength=' + max + ' minlength=' + min : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
+			
+			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'mt');
+			
+			
 		}else if(type == "select"){
+			//set values for select
 			var vals =  $(this).find('.type_list textarea').val();
 			var valStr = "";
 			vals = vals.split(",");
@@ -332,16 +321,95 @@ function buildForm(){
 				valStr += ', '
 				}
 			}
+			//get variable
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
+			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
+			code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
+			code.val( code.val() + tab(3) + '}else{');
+				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
+			code.val( code.val() + tab(3) + '} ?>');
 			
-			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');
-			code.val( code.val() + tab(3) + '<?php $' + variable + '_selected = (isset( $' + frmName + '->get' + variable.capitalize() + '() ) ? $' + frmName + '->get' + variable.capitalize() + '() : ""); ?>');
+			
 			code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
 			code.val( code.val() + tab(4) + '<?php for($v=0; $v < sizeof($' + variable + '_values); $v++){ ?>');
-			code.val( code.val() + tab(5) + '<option value="<?php echo $v; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
-			
+			code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$v]; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
 			code.val( code.val() + tab(4) + '<?php } ?>');
 			code.val( code.val() + tab(3) + '</select>');
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
+			
+		}else if( type == "checkbox" ){
+			
+			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
+			code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
+			code.val( code.val() + tab(3) + '}else{');
+				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
+			code.val( code.val() + tab(3) + '} ?>');
+			
+			
+		
+			code.val( code.val() + tab(3) + '<input type="checkbox" id="' + variable + '" name="' + variable + '" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' value="1" <?php if($' + variable + '_selected == 1 ){ echo "checked"; } ?> />');
+
+			
+			//variable length should be size of largest option
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if(type == "pattern" ){
+		
+			code.val( code.val() + tab(3) + '<input type="text" id="' + variable + '" name="' + variable + '" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' pattern="' + pattern + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" />');
+		
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		
+		}else if (type == "selectMultiple" || type == "radioGroup" || type == "checkGroup" ){
+			var vals =  $(this).find('.type_list textarea').val();
+			var valStr = "";
+			vals = vals.split(",");
+			for(var v=0; v < vals.length; v++){
+				valStr += '"' + vals[v] + '"';
+				if( ((v + 1) < vals.length) ){
+				valStr += ', '
+				}
+				
+				//create multiple variables for these
+				if( type == "selectMultiple" || type == "checkGroup" ){
+					variables.val( variables.val() + '\r\n' + variable +'_' + v + ', ' + 'v');
+				}
+				
+			}
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
+			
+			if( type == "selectMultiple" ){
+				code.val( code.val() + tab(3) + '<select id="' + variable + '" name="' + variable + '[]" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' multiple>');
+			
+				code.val( code.val() + tab(4) + '<?php for($sm = 0; $sm < sizeof( $' + variable + '_values); $sm++){ ?>');
+				
+				//get values
+				
+				code.val( code.val() + tab(5) + '<?php $function = "get' +  variable.capitalize() + '_' + '".$sm; ?>');
+				
+				code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$sm]; ?>" <?php if($'+ variable +'_values[$sm] ==  ( is_object($' + frmName + ') &&  $' + frmName + '->$function() ?  $' + frmName + '->$function()  : \'\') ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$sm]; ?></option>' );
+			
+				code.val( code.val() + tab(4) + '<?php } ?>');
+				code.val( code.val() + tab(3) + '</select>');
+				code.val( code.val() + tab(3) + '<p>You may hold ctrl to select multiple items</p>');
+				
+				//add vars for each
+				
+			}else if( type == "radioGroup" ){
+			
+			
+			}else if( type == "checkGroup" ){
+			
+			
+			}
+			
+			
+		
+		
+		
 		}
+		
+		
+		
 		
 		
 		code.val( code.val() + tab(2) + '</div>' );
