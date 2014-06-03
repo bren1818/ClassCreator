@@ -985,7 +985,7 @@ $(function(){
 		code.val( code.val() + tab(5) + '$buildQuery = substr( $buildQuery , 0, (strlen($buildQuery) -4) );');
 		
 		code.val( code.val() + tab(5) + '$query = $this->connection->PREPARE($buildQuery);');
-		code.val( code.val() + tab(5) + 'for($i=0; $i < sizeof($numParams); $i++){');
+		code.val( code.val() + tab(5) + 'for($i=0; $i < $numParams; $i++){');
 		code.val( code.val() + tab(6) + '$query->bindParam(":value_".$i, $values[$i]);');
 		code.val( code.val() + tab(5) + '}');
 		code.val( code.val() + tab(5) + 'if( $query->execute() ){');
