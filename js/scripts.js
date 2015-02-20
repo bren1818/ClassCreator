@@ -1077,7 +1077,7 @@ $(function(){
 		
 		/**************SQL TABLE CREATION**********************/
 		sql.show();
-		sql.val('CREATE TABLE  `' + tableName + '` (');
+		sql.val('CREATE TABLE IF NOT EXISTS `' + tableName + '` (');
 		sql.val( sql.val() + '\r\n`id` INT NULL DEFAULT NULL AUTO_INCREMENT PRIMARY KEY');
 		//remove the original pre-defined vars
 		vars.remByVal("id");
