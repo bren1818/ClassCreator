@@ -13,32 +13,13 @@
 			border: 1px solid #000;
 		}
 		
-		.formRow > div{
-			width: 23%;
-			float: left;
-			display: block;
-			min-height: 40px;
-			padding: 0px 1%;
-			clear: both;
-		}
-		
-		.formRow{
-			clear: both;
-			width: 100%;
-			margin: 10px 0px;
-			overflow: hidden;
-			border-top: 1px solid #000;
-			border-bottom: 1px solid #000;
-		}
-		
-		#formMode .formRow:first-child{
-			border-top: none;
-		}
-		
+		html *{
+  box-sizing: border-box;
+}
 		
 		input:invalid,
 		input:required {
-			box-shadow: 3px 1px 5px rgba(200, 0, 0, 0.85);
+			box-shadow: 1px 1px 5px rgba(200, 0, 0, 0.85);
 			border: 1px solid rgb(200,0,0);
 		}
 		
@@ -61,6 +42,48 @@
 		#preview > form{
 			border: 1px solid #000;
 		}
+		
+		/*Form Mode Style*/
+		#formMode{
+			padding: 10px;
+			width: 100%;
+			border: 2px solid #999;
+			border-radius: 5px;
+		}
+		
+		.formSection{
+			padding: 10px 0;
+		}
+		
+		.formRow{
+			clear: both;
+			width: 100%;
+			display: block;
+			margin: 10px 0px;
+			padding: 10px;
+			overflow: hidden;
+			border: 1px solid #aaa;
+			border-radius: 10px;
+		}
+		
+		.formRow .tools{
+			clear: both;
+			width: 100%;
+			text-align: right;
+		}
+		
+		.formRow > div{
+			float: left;
+			font-weight: bold;
+			width: 48%;
+			float: left;
+			display: block;
+			
+			padding: 0px 1%;
+		}
+		
+		
+		
 	</style>
 	
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>

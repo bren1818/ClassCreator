@@ -76,26 +76,26 @@ function addFormRow(){
 		var id = new Date().getTime();
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
 			'<div class="formRow">' + 
-			
+				'<div class="tools"><button class="delete">X</button></div>' +
 				'<div class="item_variableName">' + 
-					'Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/>' +
+					'<label>Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/></label>' +
 				'</div>' +
 				
 				'<div class="item_label">' + 
-					'Label: <input type="text" name="label" value="" required="required"/>' +
+					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
 				'</div>' + 
 				
 				'<div class="item_type">' + 
 					//<option value="telephone">telephone</option><option value="File">File</option><option value="wysiwyg">wysiwyg</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option>
-					'Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="pattern">Input Pattern</option><option value="date">Date</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option></select>' + 
+					'<label>Type: <select name="item"><option value="text">text</option><option value="number">number</option><option value="email">email</option><option value="textarea">textarea</option><option value="checkbox">checkbox</option><option value="select">Select</option><option value="pattern">Input Pattern</option><option value="date">Date</option><option value="selectMultiple">Select Multiple</option><option value="radioGroup">Radio Button Group</option><option value="checkGroup">Checkbox Group</option></select></label>' + 
 				'</div>' + 
 				
 				'<div class="item_required">' + 				
-					'Required: <input type="checkbox" name="item_required"/>' + 
+					'<label>Required: <input type="checkbox" name="item_required"/></label>' + 
 				'</div>' + 
 				
 				'<div class="item_error" style="display: none">' + 
-					'Error Text: <input type="text" value="" />' +
+					'<label>Error Text: <input type="text" value="" /></label>' +
 				'</div>' + 
 				
 				'<div class="item_date" style="display: none"> Date: ' +
@@ -116,16 +116,16 @@ function addFormRow(){
 				'</div>' +
 				
 				'<div class="type_text type_number type_textarea" style="display: none;">' + 
-					'Restrict input length: <input type="checkbox" name="item_restrictLength"/>' + 
+					'<label>Restrict input length: <input type="checkbox" name="item_restrictLength"/></label>' + 
 					'<div class="item_restrict_length" style="display: none;">' +
-						'Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
+						'<label>Min Length: <input type="number" name="min_length" value="0"/> - Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" />' +
 					'</div>' +
 				'</div>' + 
 				
 				'<div class="type_number" style="display: none">' + 
-					'Restrict input amount: <input type="checkbox" name="item_restrictAmount"/>' + 
+					'<label>Restrict input amount: <input type="checkbox" name="item_restrictAmount"/></label>' + 
 					'<div class="item_restrict_amount" style="display: none">' +
-						'Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
+						'<label>Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
 					'</div>' +
 				'</div>' + 
 				
@@ -150,6 +150,9 @@ function addFormRow(){
 			
 		'</div>';
 		$('#formMode').append(html);
+		$('#formSection_' + id + ' .tools .delete').click(function(event){
+			$(this).closest('.formSection').remove();
+		});
 		$('#formSection_' + id + ' .item_type select').change(function(event){
 			var val = $(this).val();
 				$('#formSection_' + id + ' .type_number').hide();
@@ -256,6 +259,41 @@ function addFormRow(){
 	
 	});
 }
+
+	function getFormVals(mode){
+		if( mode == "advanced" || mode == "simple" ){
+			return encodeURI($('#variables').val());
+		}else{
+			var rows = [];
+			$('#formMode .formSection').each(function(){
+				var row = { 
+					'name': $(this).find('.item_variableName input').val(), 
+					'label': $(this).find('.item_label input').val(), 
+					'type':  $(this).find('.item_type select option:selected').val(),
+					'required': $(this).find('.item_required input').prop("checked"),
+					'errText': $(this).find('.item_error input').val()
+				}
+				rows.push( row );
+			});
+			return rows;
+		}
+	}
+	
+	function makeSaveString(){
+		//end generate button click
+		var m =  $('input[name="mode"]:checked').val();
+		var v = getFormVals( m );
+	
+		var SaveString = {
+			'mode' : m,
+			'keys' :  encodeURI(JSON.stringify(v)),
+			'classname' : $('#className').val(),
+			'listBy' : $('input[name="includeListby"]').prop("checked"),
+			'getBy' : $('input[name="includeGetby"]').prop("checked"),
+			'defaultSize' : $('#defaultVarcharLength').val()
+		}
+		$('#saveString').val( array2json(SaveString) );
+	}
 
 
 function buildForm(){
@@ -517,9 +555,16 @@ function buildForm(){
 		}
 	});
 	
+	makeSaveString();
+	
 	$('input[name="mode"][value="advanced"]').prop("checked", true);
+	
 	$('#generate').click();
-
+	
+	
+	
+$('input[name="mode"][value="form"]').prop("checked", true);
+	
 }
 
 
@@ -545,6 +590,9 @@ $(function(){
 		}else{
 			$('#formMode').show();
 			$('#addFormInput').show();
+			if( $('#formMode .formSection').length == 0 ){
+				addFormRow();
+			}
 		}
 	});
 	
@@ -560,6 +608,7 @@ $(function(){
 		
 		
 		var mode = $('input[name="mode"]:checked').val();
+		
 		var tableName = "";
 		if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
 			$( generatedCode.getWrapperElement() ).remove();
@@ -578,13 +627,20 @@ $(function(){
 		}else{
 			tableName = className.val().toLowerCase().trim();
 		}
+		
 		var vars = ["id", "connection", "errors", "errorCount"];
 		var varsCheck = vars.slice(); //duplicate copy for use with checking variables
 		var types = [];
 	
+		
+	
 		if( mode == "form" ){
 			buildForm();
 			return;
+		}else{
+			if( $.trim( $('#saveString').val() ) == "" ){
+				makeSaveString();
+			}
 		}
 	
 		var lines = variables.val().split('\n');
@@ -598,7 +654,7 @@ $(function(){
 			}
 		}
 
-		makeSaveString();
+		
 		
 		code.show();
 		code.val( '<?php');
@@ -1166,24 +1222,7 @@ $(function(){
 		
 	});
 	
-	function getFormVals(mode){
-		if( mode == "advanced" || mode == "simple" ){
-			return encodeURI($('#variables').val());
-		}
-	}
 	
-	function makeSaveString(){
-		//end generate button click
-		var SaveString = {
-			'mode' : $('input[name="mode"]:checked').val(),
-			'config' :  getFormVals( $('input[name="mode"]:checked').val() ),
-			'classname' : $('#className').val(),
-			'listBy' : $('input[name="includeListby"]').prop("checked"),
-			'getBy' : $('input[name="includeGetby"]').prop("checked"),
-			'defaultSize' : $('#defaultVarcharLength').val()
-		}
-		$('#saveString').val( array2json(SaveString) );
-	}
 	
 	/*******************LOAD*****************/
 	
@@ -1196,17 +1235,39 @@ $(function(){
 			var o = jsonParse( loadStr );
 			if(  o === Object(o) ){
 				 
-				
+				console.log( o );
+				$('input:radio[name="mode"][value="' + o.mode + '"]').prop('checked',true);
+				$('input:radio[name="mode"]').click();
 				
 				$('#className').val( o.classname );
 				if( o.mode == "advanced" || o.mode == "simple" ){
 					$('#variables').val( decodeURI(o.config) );
+				}else{
+					var keys = jsonParse( decodeURI( o.keys ) );
+					$('#formMode .formSection').remove();
+					for(var k=0; k < keys.length; k++){
+						$('#addFormInput').click();
+						var lastRow = $('#formMode .formSection').last().attr('id');
+						$('#' + lastRow + ' .item_variableName input').val( keys[k].name );
+						$('#' + lastRow + ' .item_label input').val( keys[k].label );
+						$('#' + lastRow + ' .item_type select').val( keys[k].type );
+						$('#' + lastRow + ' .item_error input').val( keys[k].errText );
+						$('#' + lastRow + ' .item_required input').prop('checked', keys[k].required );
+						
+					}
+					
+					console.log( keys );
+					
+					/*
+					{"mode":"form","keys":"%5B%7B%22name%22:%22a%22,%22label%22:%22a%22,%22type%22:%22text%22,%22required%22:false,%22errText%22:%22%22%7D,%7B%22name%22:%22b%22,%22label%22:%22b%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22%22%7D,%7B%22name%22:%22c%22,%22label%22:%22c%22,%22type%22:%22email%22,%22required%22:true,%22errText%22:%22email%20required%22%7D%5D","classname":"test","listBy":true,"getBy":true,"defaultSize":"45"}
+					*/
+				
 				}
 				
 				$('#defaultVarcharLength').val(  o.defaultSize );
 				$('input[name="includeListby"]').prop("checked", o.listBy);
 				$('input[name="includeGetby"]').prop("checked", o.getBy);
-				$('input:radio[name="mode"][value="' + o.mode + '"]').prop('checked',true);
+				
 			}
 			
 			
