@@ -605,8 +605,6 @@ $(function(){
 	
 	
 	$('#generate').click(function(event){
-		
-		
 		var mode = $('input[name="mode"]:checked').val();
 		
 		var tableName = "";
@@ -1259,7 +1257,7 @@ $(function(){
 					console.log( keys );
 					
 					/*
-					{"mode":"form","keys":"%5B%7B%22name%22:%22a%22,%22label%22:%22a%22,%22type%22:%22text%22,%22required%22:false,%22errText%22:%22%22%7D,%7B%22name%22:%22b%22,%22label%22:%22b%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22%22%7D,%7B%22name%22:%22c%22,%22label%22:%22c%22,%22type%22:%22email%22,%22required%22:true,%22errText%22:%22email%20required%22%7D%5D","classname":"test","listBy":true,"getBy":true,"defaultSize":"45"}
+					{"mode":"form","keys":"%5B%7B%22name%22:%22name%22,%22label%22:%22Name:%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22Name%20is%20a%20required%20field%22%7D,%7B%22name%22:%22age%22,%22label%22:%22Age:%22,%22type%22:%22number%22,%22required%22:true,%22errText%22:%22%22%7D,%7B%22name%22:%22email%22,%22label%22:%22Email:%22,%22type%22:%22email%22,%22required%22:true,%22errText%22:%22email%20required%22%7D%5D","classname":"User","listBy":true,"getBy":true,"defaultSize":"45"}
 					*/
 				
 				}
@@ -1311,7 +1309,7 @@ $(function(){
 		}
 	});
 	
-	
+	$('input:radio[name=mode]').filter(":checked").change();
 	
 	
 });

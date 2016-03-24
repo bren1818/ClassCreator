@@ -82,7 +82,7 @@
 			padding: 0px 1%;
 		}
 		
-		
+		#saveString{ width: 100%; }
 		
 	</style>
 	
@@ -328,10 +328,8 @@
 					?&gt;
 					</textarea>
 					
-					<h2>Save Config String</h2>
-					<textarea id="saveString">
-					
-					</textarea>
+					<h2>Config String</h2>
+					<textarea id="saveString"></textarea>
 					
 					
 				</div>
