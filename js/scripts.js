@@ -359,6 +359,35 @@ function addFormRow(){
 	}
 
 
+/**
+
+**********************************
+
+**/	
+	
+function makeCodeEditor(id){
+	
+	var generatedForm;
+	generatedForm = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
+		lineNumbers: true,
+		mode: "text/html", 
+		extraKeys: { 
+			"F11": function(cm) {
+			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+			},
+			"Esc": function(cm) {
+			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+			},
+			"Ctrl-Space": "autocomplete"
+		}
+	});
+}
+
+	
+
+	
+	
+	
 function buildForm(){
 	var code = $('#generatedFORM');
 	var variables = $('#variables');
@@ -601,7 +630,9 @@ function buildForm(){
 	
 	//$('#preview').html( code.val() );
 	
+	makeCodeEditor('generatedFORM');
 	
+	/*
 	var generatedForm;
 	
 	generatedForm = CodeMirror.fromTextArea(document.getElementById("generatedFORM"), {
@@ -617,7 +648,7 @@ function buildForm(){
 			"Ctrl-Space": "autocomplete"
 		}
 	});
-	
+	*/
 	makeSaveString();
 	
 	$('input[name="mode"][value="advanced"]').prop("checked", true);
@@ -629,6 +660,12 @@ function buildForm(){
 $('input[name="mode"][value="form"]').prop("checked", true);
 	
 }
+
+/**
+
+**********************************
+
+**/
 
 
 $(function(){
@@ -701,7 +738,22 @@ $(function(){
 		
 	
 		if( mode == "form" ){
-			buildForm();
+			//
+			//console.log(  $('#buildCrud').prop('checked') )
+			if( $('#buildCrud').prop('checked')  ){
+				$('#crudInterfaces').show();
+				buildAdminForm();
+				buildCreateForm();
+				buildUpdateForm();
+				buildDeleteForm();
+				
+				makeSaveString();
+				$('input[name="mode"][value="form"]').prop("checked", true);
+			}else{
+				$('#genFormTitle').show();
+				buildForm();
+			}
+			
 			return;
 		}else{
 			if( $.trim( $('#saveString').val() ) == "" ){

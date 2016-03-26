@@ -8,86 +8,7 @@
 	<link rel="stylesheet" href="<?php echo $CMPATH; ?>/lib/codemirror.css">
 	<link rel="stylesheet" href="<?php echo $CMPATH; ?>/addon/hint/show-hint.css">
 	<link rel="stylesheet" href="<?php echo $CMPATH; ?>/addon/display/fullscreen.css">
-	<style type="text/css">
-		.CodeMirror{
-			border: 1px solid #000;
-		}
-		
-		html *{
-  box-sizing: border-box;
-}
-		
-		input:invalid,
-		input:required {
-			box-shadow: 1px 1px 5px rgba(200, 0, 0, 0.85);
-			border: 1px solid rgb(200,0,0);
-		}
-		
-		input:valid{
-			box-shadow: none;
-			background-repeat: no-repeat;
-			border: 1px solid #0f0;
-		}
-		
-		input[type="text"]{ padding-left: 5px; }
-		
-		#preview{
-			padding: 10px;
-		}
-		
-		#preview > form .formRow{
-			border: none;
-		}
-		
-		#preview > form{
-			border: 1px solid #000;
-		}
-		
-		/*Form Mode Style*/
-		#formMode{
-			padding: 10px;
-			width: 100%;
-			border: 2px solid #999;
-			border-radius: 5px;
-		}
-		
-		.formSection{
-			padding: 10px 0;
-		}
-		
-		.formRow{
-			clear: both;
-			width: 100%;
-			display: block;
-			margin: 10px 0px;
-			padding: 10px;
-			overflow: hidden;
-			border: 1px solid #aaa;
-			border-radius: 10px;
-		}
-		
-		.formRow .tools{
-			clear: both;
-			width: 100%;
-			text-align: right;
-		}
-		
-		.formRow > div{
-			float: left;
-			font-weight: bold;
-			width: 48%;
-			float: left;
-			display: block;
-			
-			padding: 0px 1%;
-		}
-		
-		#saveString{ width: 100%; }
-		
-		.item_restrict_length label {
-			clear: right;
-		}
-	</style>
+	
 	
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="js/jquery.autosize.min.js" type="text/javascript"></script>
@@ -105,6 +26,7 @@
 	<script src="<?php echo $CMPATH; ?>/mode/php/php.js"></script>
 	<script src="js/array2json.js" type="text/javascript"></script>
 	<script src="js/json_sans_eval.js" type="text/javascript"></script>
+	<script src="js/CRUD.js" type="text/javascript"></script>
 	<script src="js/scripts.js" type="text/javascript"></script>
 </head>
 <body>
@@ -181,10 +103,12 @@
 					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
 				
 					
-					<h2>Generated Form</h2>
+					<h2 id="genFormTitle" style="display: none;">Generated Form</h2>
 					<textarea id="generatedFORM" style="width: 100%; min-height: 50px; display:none;"></textarea>
 					
 					<div id="crudInterfaces" style="display:none">
+						<h2><u>Admin</u></h2>
+						<textarea id="AdminPage" style="width: 100%; min-height: 50px; display:none;"></textarea>
 						<h2><u>CR</u>eate</h2>
 						<textarea id="CreatePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
 						<h2><u>U</u>pdate</h2>
@@ -242,36 +166,15 @@
 					
 					<h2>Config String</h2>
 					<textarea id="saveString"></textarea>
-					
-					
+
 				</div>
 				
-				
 				<div id="preview"></div>
-				
-				
-				
-				
 				
 				<div class="clear"></div>
 				<p>Check out this Git Project here: <a target="_blank" href="https://github.com/bren1818/ClassCreator.git">https://github.com/bren1818/ClassCreator.git</a></p>
 			</div>
 		</div>
 	</div>
-	<!--
-	<div class="pageContentSection">
-		<div class="wrapper" id="footer">
-			Footer
-			<div class="pageContent four-col">	
-				<div class="col col25 col-left"></div>
-				<div class="col col25"></div>
-				<div class="col col25"></div>
-				<div class="col col25 col-right"></div>
-				<div class="clear"></div>
-			</div>
-		</div>
-		
-	</div>	
-	-->
 </div>	
 </body>
