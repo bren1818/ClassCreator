@@ -8,6 +8,9 @@ function buildAdminForm(){
 	code.val( code.val() + '<!--Admin Form: "' + oName + '" Object -->\r\n');
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '\r\n');
+	code.val( code.val() + '<!-- ' + oName + 'Admin.php -->\r\n');
+	code.val( code.val() + '\r\n');
+	code.val( code.val() + '\r\n');
 	code.val( code.val() + '<!--Recommended include -->\r\n');
 	code.val( code.val() + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
 	code.val( code.val() + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');
@@ -37,7 +40,7 @@ function buildAdminForm(){
 	//ouput Data
 	code.val( code.val() + tab(4) +	'<?php\r\n');
 	code.val( code.val() + tab(5) +	'$conn = getConnection();\r\n');
-	code.val( code.val() + tab(5) +	'$query = "SELECT * FROM `' + oName + '`";\r\n');
+	code.val( code.val() + tab(5) +	'$query = "SELECT * FROM `' + frmName + '`";\r\n');
 	code.val( code.val() + tab(5) +	'$result = $conn->prepare($query);\r\n');
 	code.val( code.val() + tab(5) +	'foreach( $result->fetchAll(PDO::FETCH_ASSOC) as $row){\r\n');
 	code.val( code.val() + tab(6) +	'echo "<tr>";\r\n');
@@ -94,9 +97,237 @@ function buildAdminForm(){
 	makeCodeEditor('AdminPage');
 }
 
+
+function getFormInnards(code, frmName){
+	var frmName = $('#className').val().toLowerCase().trim();
+	var variables = $('#variables');
+	var code = $('#' + code );
+	
+	
+	$('#formMode .formSection').each(function(){
+		var label = $(this).find('.item_label input').val();
+		var variable = $(this).find('.item_variableName input').val();
+		variable = variable.replace(/\s+/g, ' ');
+		var type =  $(this).find('.item_type select option:selected').val();
+		var required = $(this).find('.item_required input').prop('checked');
+		var restrictLength = $(this).find('.type_text input[name="item_restrictLength"]').prop('checked');
+		var min = 0;
+		var max = 0;
+		var errText = $(this).find('.item_error input').val();
+		var restrictAmount =  $(this).find('.type_number input[name="item_restrictAmount"]').prop('checked');
+		var minAmount = 0;
+		var maxAmount = 0;
+		var pattern =  $(this).find('.type_pattern textarea').val();
+		
+		var restrictDate= $(this).find('.item_date input[name="item_restrictDates"]').prop('checked');
+		
+		
+		if( variable == "" ){
+			return;
+		}
+		
+		if( errText == "" ){
+			if( required ){
+				errText = label + " is a required field. ";
+			}
+		}
+		
+		if( restrictLength ){
+			min = $(this).find('.type_text input[name="min_length"]').val();
+			max = $(this).find('.type_text input[name="max_length"]').val();
+			errText += label + " must be between " + min + " and " + max + " characters in length. ";
+		}
+		
+		
+		if( restrictAmount ){
+			minAmount = $(this).find('.type_number input[name="min_amount"]').val();
+			maxAmount = $(this).find('.type_number input[name="max_amount"]').val();
+			errText += label + " must have a value between " + minAmount + " and " + maxAmount + ". ";
+		}
+		
+		
+		code.val( code.val() + tab(1) + '<div class="formRow">' );
+		code.val( code.val() + tab(2) + '<div class="rowLabel">' );
+		code.val( code.val() + tab(3) + '<label for="' + variable + '">' + label + ':' + (required ? '*' : '' ) + '</label>');
+		code.val( code.val() + tab(2) + '</div>' );
+		code.val( code.val() + tab(2) + '<div class="rowField">' );
+		
+		if( type == "text" ){
+			/*Input type text*/
+			code.val( code.val() + tab(3) + '<input type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}"' : '') + ' title="' + errText + '" ' +  (required ? 'required="required"' : '' ) + '/>');
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if( type == "number" ){
+			/*Number */
+			code.val( code.val() + tab(3) + '<input type="number" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '') +  (restrictAmount ? 'min="' + minAmount + '" max="' + maxAmount + '"' : '') +'/>');
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
+		}else if( type == "email" ){
+			/*Email - essentially same as input*/
+			if( required ){
+				errText = label + " is a required field. ";
+			}
+			code.val( code.val() + tab(3) + '<input type="email" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '')  + '/>');
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if( type == "textarea" ){
+		
+			/*Textarea*/
+			
+			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required" ' : '') + (restrictLength ? ' maxlength=' + max + ' minlength=' + min : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
+			
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'mt');
+			
+			
+		}else if(type == "select"){
+			//set values for select
+			var vals =  $(this).find('.type_list textarea').val();
+			var valStr = "";
+			vals = vals.split(",");
+			for(var v=0; v < vals.length; v++){
+				valStr += '"' + vals[v] + '"';
+				if( ((v + 1) < vals.length) ){
+				valStr += ', '
+				}
+			}
+			//get variable
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
+			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
+			code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
+			code.val( code.val() + tab(3) + '}else{');
+				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
+			code.val( code.val() + tab(3) + '} ?>');
+			
+			
+			code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
+			code.val( code.val() + tab(4) + '<?php for($v=0; $v < sizeof($' + variable + '_values); $v++){ ?>');
+			code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$v]; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
+			code.val( code.val() + tab(4) + '<?php } ?>');
+			code.val( code.val() + tab(3) + '</select>');
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
+			
+		}else if( type == "checkbox" ){
+			
+			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
+			code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
+			code.val( code.val() + tab(3) + '}else{');
+				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
+			code.val( code.val() + tab(3) + '} ?>');
+			
+			code.val( code.val() + tab(3) + '<input type="checkbox" id="' + variable + '" name="' + variable + '" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' value="1" <?php if($' + variable + '_selected == 1 ){ echo "checked"; } ?> />');
+
+			//variable length should be size of largest option
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}else if(type == "pattern" ){
+		
+			code.val( code.val() + tab(3) + '<input type="text" id="' + variable + '" name="' + variable + '" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' pattern="' + pattern + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" />');
+		
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		
+		}else if (type == "selectMultiple" || type == "radioGroup" || type == "checkGroup" ){
+			var vals =  $(this).find('.type_list textarea').val();
+			var valStr = "";
+			vals = vals.split(",");
+			for(var v=0; v < vals.length; v++){
+				valStr += '"' + vals[v] + '"';
+				if( ((v + 1) < vals.length) ){
+				valStr += ', '
+				}
+				
+				//create multiple variables for these
+				if( type == "selectMultiple" || type == "checkGroup" ){
+					variables.val( variables.val() + '\r\n' + variable +'_' + v + ', ' + 'v');
+				}
+				
+			}
+			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
+			
+			if( type == "selectMultiple" ){
+				code.val( code.val() + tab(3) + '<select id="' + variable + '" name="' + variable + '[]" ' + ' title="' + errText + '" ' + (required ? ' required="required" ' : '') + ' multiple>');
+			
+				code.val( code.val() + tab(4) + '<?php for($sm = 0; $sm < sizeof( $' + variable + '_values); $sm++){ ?>');
+				
+				//get values
+				
+				code.val( code.val() + tab(5) + '<?php $function = "get' +  variable.capitalize() + '_' + '".$sm; ?>');
+				
+				code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$sm]; ?>" <?php if($'+ variable +'_values[$sm] ==  ( is_object($' + frmName + ') &&  $' + frmName + '->$function() ?  $' + frmName + '->$function()  : \'\') ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$sm]; ?></option>' );
+			
+				code.val( code.val() + tab(4) + '<?php } ?>');
+				code.val( code.val() + tab(3) + '</select>');
+				code.val( code.val() + tab(3) + '<p>You may hold ctrl to select multiple items</p>');
+				
+				//added vars for each
+				
+			
+			}else if( type == "checkGroup" ){
+				
+				code.val( code.val() + tab(3) + '<?php for($sm = 0; $sm < sizeof( $' + variable + '_values); $sm++){ ?>');
+				code.val( code.val() + tab(4) + '<?php $function = "get' +  variable.capitalize() + '_' + '".$sm; ?>');
+				
+				code.val( code.val() + tab(4) + '<label><?php echo $' + variable + '_values[$sm]; ?>: <input type="checkbox" name="' + variable + '_<?php echo $sm; ?>" id="' + variable + '_<?php echo $sm; ?>" value="<?php echo trim($' + variable + '_values[$sm]); ?>" <?php if(  ( isset($' + frmName + ') &&  is_object($' + frmName + ') &&  $' + frmName + '->$function() ?  $' + frmName + '->$function()  : \'\') == trim($' + variable + '_values[$sm])){ echo " checked" } ?>/></label>');
+			
+			
+				code.val( code.val() + tab(3) + '<?php } ?>');
+			}else if( type == "radioGroup" ){
+			
+				code.val( code.val() + tab(3) + '<?php for($sm = 0; $sm < sizeof( $' + variable + '_values); $sm++){ ?>');
+				//code.val( code.val() + tab(4) + '<?php $function = "get' +  variable.capitalize() + '_' + '".$sm; ?>');
+				
+				code.val( code.val() + tab(4) + '<label><?php echo $' + variable + '_values[$sm]; ?>: <input type="radio" name="' + variable + '" id="' + variable + '" value="<?php echo trim($' + variable + '_values[$sm]); ?>" <?php if( ( is_object($' + frmName + ') &&  $' + frmName + '->get' +  variable.capitalize() + '() ?  $' + frmName + '->get' +  variable.capitalize() + '()  : \'\') == trim($' + variable + '_values[$sm])){ echo " checked"; } ?> ' + (required ? ' required="required" ' : '') + '/></label>');
+			
+			
+				code.val( code.val() + tab(3) + '<?php } ?>');
+			
+				variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+			}
+			
+		
+		}else if(type == "date"){
+			//pattern="\d{1,2}/\d{1,2}/\d{4}"
+			//(mm/dd/yyyy)
+			errText = errText + " Date should be in format mm\/dd\/yyyy";
+			
+			code.val( code.val() + tab(3) + '<label>(mm/dd/yyyy) <input class="dateInput" type="text" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" title="' + errText + '" ' +  (required ? 'required="required"' : '' ) + ' pattern="\d{1,2}/\d{1,2}/\d{4}" /></label>');
+			
+			if( restrictDate ){
+				var startYr = $(this).find('.item_date input[name="startYr"]').val();
+				var From = $(this).find('.item_date input[name="from"]').val();
+				var To = $(this).find('.item_date input[name="to"]').val();
+			
+				//to do
+			
+			}
+			
+			
+			
+			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+		}
+		
+		
+		
+		
+		
+		code.val( code.val() + tab(2) + '</div>' );
+		
+		
+		
+		code.val( code.val() + tab(1) + '</div>' );
+		console.log(label,variable,type, required, restrictLength, errText, min, max);
+		
+		//set the class creator to 
+		
+		
+	});
+	
+	return code;
+}	
+
+
+
 function buildCreateForm(){
 	var code = $('#CreatePage');
-	var variables = $('#variables');
+	
 	var frmName = $('#className').val().toLowerCase().trim();
 	var oName = frmName.capitalize();
 	code.show();
@@ -108,10 +339,49 @@ function buildCreateForm(){
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '\r\n');
 	
+	code.val(  code.val() + tab(0) + '<?php');
+	code.val(  code.val() + tab(1) + '$conn = getConnection(); //set to DB Conn');
+	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + oName + '($conn);');
+	code.val(  code.val() + tab(1) + '$showForm = 1;');
+	
+	code.val(  code.val() + tab(1) + 'if(strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {');
+	code.val(  code.val() + tab(2) + '$' + frmName + '->getFromPost();');
+	
+	code.val(  code.val() + tab(2) + 'if( $' + frmName + '->save() > 0 && $' + frmName + '->getErrorCount() == 0){');
+	
+	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' saved successfully!</p>";'); 
+	code.val(  code.val() + tab(3) + '$showForm = 0;');
+	code.val(  code.val() + tab(2) + '}else{');
+	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' contained (".$' + frmName + '->getErrorCount().") error(s).</p>";'); 
+	code.val(  code.val() + tab(3) + 'echo "<p>Errors: ".$' + frmName + '->getErrors()."</p>";'); 
+	
+	
+	code.val(  code.val() + tab(2) + '}');
+	
+	code.val(  code.val() + tab(1) + '}');
+	code.val(  code.val() + tab(1) + 'if( $showForm == 1){');
+	code.val(  code.val() + tab(0) + '?>' );
+	
+	
+	code.val( code.val() + tab(0) + '<form name="create' + oName + '" id="create' + oName + '" method="POST" action="create' + oName +'.php" enctype="multipart/form-data">' );
+	
+	getFormInnards( 'CreatePage'  );
+	
+	code.val( code.val() + tab(1) + '<div class="formRow rowCenter">');
+	code.val( code.val() + tab(2) + '<input class="button" type="submit" value="Save" /> <a href="' + oName +'Admin.php">Cancel</a>' );
+	code.val( code.val() + tab(1) + '</div>');
+	
+	code.val( code.val() + tab(0) + '</form>');
+	code.val( code.val() + tab(0) + '<?php } ?>');
 	
 	
 	makeCodeEditor('CreatePage');
 }
+
+
+
+
+
 
 function buildUpdateForm(){
 	var code = $('#UpdatePage');
@@ -131,8 +401,79 @@ function buildUpdateForm(){
 	
 	
 	
+	
+	
+	code.val(  code.val() + tab(0) + '<?php');
+	code.val(  code.val() + tab(1) + '$conn = getConnection(); //set to DB Conn');
+	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + oName + '($conn);');
+	code.val(  code.val() + tab(1) + '$showForm = 1;');
+	
+	code.val(  code.val() + tab(1) + 'if(strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {');
+	code.val(  code.val() + tab(2) + '$' + frmName + '->getFromPost();');
+	
+	code.val(  code.val() + tab(2) + 'if( $' + frmName + '->save() > 0 && $' + frmName + '->getErrorCount() == 0){');
+	
+	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' updated successfully!</p>";'); 
+	code.val(  code.val() + tab(3) + '$showForm = 0;');
+	code.val(  code.val() + tab(2) + '}else{');
+	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' contained (".$' + frmName + '->getErrorCount().") error(s).</p>";'); 
+	code.val(  code.val() + tab(3) + 'echo "<p>Errors: ".$' + frmName + '->getErrors()."</p>";'); 
+	
+	
+	code.val(  code.val() + tab(2) + '}');
+	
+	code.val(  code.val() + tab(1) + '}else{');
+	code.val( code.val() + tab(2) + '$' + frmName + 'ID = $_REQUEST["' + frmName + 'ID"];\r\n');
+	code.val( code.val() + tab(2) + '$' + frmName + ' = $' + frmName + '->load( $' + frmName + 'ID );\r\n');
+	
+	//if couldnt load echo error... 
+	code.val( code.val() + tab(2) + 'if( $' + frmName + '->getID() > 0 ){');
+		
+	code.val( code.val() + tab(2) + '}else{');
+	code.val( code.val() + tab(3) + '$showForm = 0;');
+	code.val( code.val() + tab(3) + 'echo "<p>Could not load ' + oName + ' with ID of ".$' + frmName +'ID."</p>";');	
+		
+	code.val( code.val() + tab(2) + '}');
+	
+	code.val(  code.val() + tab(1) + '}');
+	//check request
+	
+	
+	
+	code.val(  code.val() + tab(1) + 'if( $showForm == 1){');
+	code.val(  code.val() + tab(0) + '?>' );
+	
+	
+	code.val( code.val() + tab(0) + '<form name="update' + oName + '" id="update' + oName + '" method="POST" action="update' + oName +'.php" enctype="multipart/form-data">' );
+	
+	getFormInnards( 'UpdatePage'  );
+	
+	code.val( code.val() + tab(1) + '<div class="formRow rowCenter">');
+	code.val( code.val() + tab(2) + '<input type="hidden" name="' + frmName + 'ID" value="<?php echo $' + frmName + '->getID(); ?>" /> <input class="button" type="submit" value="Update" /> <a href="' + oName +'Admin.php">Cancel</a>' );
+	code.val( code.val() + tab(1) + '</div>');
+	
+	code.val( code.val() + tab(0) + '</form>');
+	code.val( code.val() + tab(0) + '<?php } ?>');
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	makeCodeEditor('UpdatePage');
 }
+
+
+
+
+
+
+
 
 function buildDeleteForm(){
 	var code = $('#DeletePage');
@@ -149,7 +490,72 @@ function buildDeleteForm(){
 	code.val( code.val() + '\r\n');
 	
 	
+	code.val( code.val() + '<?php');
+	code.val( code.val() + tab(2) +	'$conn = getConnection(); //create DB Connection \r\n');
+	code.val( code.val() + tab(2) +	'include "' + oName + '.php";\r\n');
+	code.val( code.val() + tab(2) + '$' + frmName + ' = new ' + oName + '( $conn )\r\n');
 	
+	code.val( code.val() + '\r\n');
+	code.val( code.val() + '\r\n');
+	
+	code.val( code.val() + tab(2) +	'if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST"){\r\n');
+	code.val( code.val() + tab(3) + '$' +	frmName + 'ID = $_POST["' + frmName + 'ID"];\r\n');
+	
+	code.val( code.val() + tab(3) + '$' + frmName + ' = $' + frmName + '->load( $' + frmName + 'ID );\r\n');
+	
+	code.val( code.val() + tab(3) + 'if( $' + frmName + '->delete() ){\r\n');
+	code.val( code.val() + tab(4) + 'echo "<p>' + oName + ' deleted Successfully</p>";\r\n');
+	code.val( code.val() + tab(3) + '}else{\r\n');
+	code.val( code.val() + tab(4) + 'echo "<p>Error! Could not delete ' + oName + '</p>";\r\n');
+	code.val( code.val() + tab(3) + '}\r\n');
+	
+	code.val( code.val() + tab(2) +	'}else{\r\n');
+	
+	code.val( code.val() + tab(3) + '$' +	frmName + 'ID = $_REQUEST["' + frmName + 'ID"];\r\n');
+	code.val( code.val() + tab(3) + '$' + frmName + ' = $' + frmName + '->load( $' + frmName + 'ID );\r\n');
+	code.val( code.val() + tab(3) + 'if( $' + frmName + '->getID() > 0 ){\r\n');
+	code.val( code.val() + tab(3) + '?>\r\n');
+	code.val( code.val() + tab(4) + '<form method="post" action="delete' + oName + '.php">\r\n');
+	
+	code.val( code.val() + tab(5) + '<p>Are you sure you wish to delete ' + oName + ' with ID of: <?php  echo $' + frmName + 'ID; ?></p>\r\n');
+	code.val( code.val() + tab(5) + '<input type="hidden" name="' + frmName + 'ID" value ="<?php echo $' + frmName + '->getId(); ?>"/>\r\n');
+	code.val( code.val() + tab(5) + '<input type="submit" value="Yes" /> <a href="' + oName +'Admin.php">Cancel</a>\r\n');
+	
+	code.val( code.val() + tab(4) + '</form>\r\n');
+	code.val( code.val() + tab(3) + '<?php\r\n');
+	code.val( code.val() + tab(3) + '}else{\r\n');
+	code.val( code.val() + tab(4) + 'echo "<p>Error! Could not load ' + oName + '</p>";\r\n');
+	code.val( code.val() + tab(3) + '}\r\n');
+	code.val( code.val() + tab(2) +	'}\r\n');
+	code.val( code.val() + '?>\r\n');
 	
 	makeCodeEditor('DeletePage');
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
