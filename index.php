@@ -98,9 +98,11 @@
 					<h2>Generated Class</h2>
 					<p>Select editor and press F11 for full screen</p>
 					<textarea id="generatedCode" style="width: 100%; min-height: 250px; display:none;"></textarea>
+					<a class="download" onClick="adminPageDownload('Class')">Download Class</a>
 					
 					<h2>Table SQL</h2>
 					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
+					<a class="download" onClick="adminPageDownload('SQL')">Download SQL Script</a>
 				
 					
 					<h2 id="genFormTitle" style="display: none;">Generated Form</h2>
@@ -109,12 +111,20 @@
 					<div id="crudInterfaces" style="display:none">
 						<h2><u>Admin</u></h2>
 						<textarea id="AdminPage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<a class="download" onClick="adminPageDownload('Admin')">Download Admin Page</a>
+						
 						<h2><u>CR</u>eate</h2>
 						<textarea id="CreatePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<a class="download" onClick="adminPageDownload('Create')">Download Create Page</a>
+						
 						<h2><u>U</u>pdate</h2>
 						<textarea id="UpdatePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<a class="download" onClick="adminPageDownload('Update')">Download Update Page</a>
+						
 						<h2><u>D</u>elete</h2>
 						<textarea id="DeletePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<a class="download" onClick="adminPageDownload('Delete')">Download Delete Page</a>
+						
 					</div>
 					
 					<h2>Default CSS</h2>					

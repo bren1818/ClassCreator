@@ -267,3 +267,8 @@ html>body .pageContentSection.Expand {
 		.item_restrict_length label {
 			clear: right;
 		}
+		
+		a.download{
+			display: block;
+			clear: both;
+		}

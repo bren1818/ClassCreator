@@ -463,6 +463,61 @@ $('input[name="mode"][value="form"]').prop("checked", true);
 **/
 
 
+function saveTextAsFile(textToWrite, fileNameToSaveAs)
+{
+    var textToWrite = $('#' + textToWrite ).val();
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+   // var fileNameToSaveAs = //Your filename;
+
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    if (window.webkitURL != null)
+    {
+        // Chrome allows the link to be clicked
+        // without actually adding it to the DOM.
+        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    }
+    else
+    {
+        // Firefox requires the link to be added to the DOM
+        // before it can be clicked.
+        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        downloadLink.onclick = destroyClickedElement;
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+    }
+
+    downloadLink.click();
+}
+
+function adminPageDownload(type){
+	
+		var className = $('#className').val().toLowerCase().trim().capitalize();
+		
+		if( type == "Class"){
+			var name = className + '.php';
+			saveTextAsFile('generatedCode', name );
+		}else if(type == "SQL"){
+			var name = className + 'SQL.sql';
+			saveTextAsFile('generatedSQL', name);
+		}else if(type == "Admin"){
+			var name = className + 'Admin.php';
+			saveTextAsFile('AdminPage', name);
+		}else if(type == "Create"){
+			var name = 'create' + className + '.php';
+			saveTextAsFile('CreatePage', name);
+		}else if(type == "Update"){
+			var name = 'update' + className + '.php';
+			saveTextAsFile('UpdatePage', name);
+		}else if(type == "Delete"){
+			var name = 'delete' + className + '.php';
+			saveTextAsFile('DeletePage', name);
+		}
+
+}
+
+
 $(function(){
 	var variables = $('#variables');
 
