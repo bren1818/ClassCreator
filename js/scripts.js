@@ -508,7 +508,7 @@ function adminPageDownload(type){
 			var name = 'create' + className + '.php';
 			saveTextAsFile('CreatePage', name);
 		}else if(type == "Update"){
-			var name = 'update' + className + '.php';
+			var name = 'modify' + className + '.php';
 			saveTextAsFile('UpdatePage', name);
 		}else if(type == "Delete"){
 			var name = 'delete' + className + '.php';
