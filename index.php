@@ -138,20 +138,11 @@
 					date_default_timezone_set("America/New_York");
 
 					function getConnection() {
-						$mode = 1;
-						if( $mode == 1 ){
-							$dbName = "localDB"; 			//Database Name
-							$dbUser = "localUser"; 			//Database User
-							$dbPass = "awesomePassword"; 	//Database Password
-							$dbHost = "localhost";
-						}else if( $mode == 2 ){	
-							$dbName = "stagingDB"; 			//Database Name
-							$dbUser = "stagingUser"; 		//Database User
-							$dbPass = "stagingPassword"; 	//Database Password
-							$dbHost = "stagingHost";
-						}else if( $mode == 3 ){
-							//prod connection
-						}
+						
+						$dbName = "localDB"; 			//Database Name
+						$dbUser = "localUser"; 			//Database User
+						$dbPass = "awesomePassword"; 	//Database Password
+						$dbHost = "localhost";
 						
 						$dbc = null;
 						try {
@@ -166,13 +157,14 @@
 						return $dbc;
 					}
 
-					//example
+					/* Example usage
 					$conn = getConnection();
 					$someClass = new someClass($conn);
 					$someClass = $someClass->load( $someID );
-
+					*/
 					?&gt;
 					</textarea>
+					<a class="download" onClick="adminPageDownload('Include')">Download Include File</a>
 					
 					<h2>Config String</h2>
 					<textarea id="saveString"></textarea>

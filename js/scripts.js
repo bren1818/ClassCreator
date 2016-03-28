@@ -513,7 +513,12 @@ function adminPageDownload(type){
 		}else if(type == "Delete"){
 			var name = 'delete' + className + '.php';
 			saveTextAsFile('DeletePage', name);
+		}else if(type == "Include"){
+		var name = 'include.php';
+			saveTextAsFile('generatedConn', name);
 		}
+		
+		
 
 }
 

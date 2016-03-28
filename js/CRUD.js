@@ -12,9 +12,9 @@ function buildAdminForm(){
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '<!--Recommended include -->\r\n');
+	code.val( code.val() + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>\r\n');
 	code.val( code.val() + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
 	code.val( code.val() + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');
-	
 	
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '\r\n');
@@ -39,27 +39,30 @@ function buildAdminForm(){
     code.val( code.val() + tab(3) +	'<tbody>\r');
 	//ouput Data
 	code.val( code.val() + tab(4) +	'<?php\r\n');
+	code.val( code.val() + tab(5) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(5) +	'$conn = getConnection();\r\n');
 	code.val( code.val() + tab(5) +	'$query = "SELECT * FROM `' + frmName + '`";\r\n');
 	code.val( code.val() + tab(5) +	'$result = $conn->prepare($query);\r\n');
-	code.val( code.val() + tab(5) +	'foreach( $result->fetchAll(PDO::FETCH_ASSOC) as $row){\r\n');
-	code.val( code.val() + tab(6) +	'echo "<tr>";\r\n');
+	code.val( code.val() + tab(5) +	'if( $result->execute() ) {\r\n');
+	code.val( code.val() + tab(6) +	'foreach( $result->fetchAll(PDO::FETCH_ASSOC) as $row){\r\n');
+	code.val( code.val() + tab(7) +	'echo "<tr>";\r\n');
 	
 	$('#formMode .formSection').each(function(){
 		var name = $(this).find('.item_variableName input').val();
 		name = name.replace(/\s+/g, ' ');
-		code.val( code.val() + tab(7) +	'echo "<td>".$row["' + name + '"]."</td>";\r\n');
+		code.val( code.val() + tab(8) +	'echo "<td>".$row["' + name + '"]."</td>";\r\n');
 	});
 	
 	
-	code.val( code.val() + tab(6) +	'?>\r\n');
+	code.val( code.val() + tab(7) +	'?>\r\n');
 	code.val( code.val() + tab(7) +	'<td>\r\n');
 	//custom links
-	code.val( code.val() + tab(8) +	'<a href="modify' + oName + '.php?' + oName + 'ID=<?php echo $row["id"]; ?>">Modify</a> <a href="delete' + oName + '.php?' + oName + 'ID=<?php echo $row["id"]; ?>">Delete</a>\r\n');
+	code.val( code.val() + tab(9) +	'<a href="modify' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Modify</a> <a href="delete' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Delete</a>\r\n');
 	
-	code.val( code.val() + tab(7) +	'</td>\r\n');
-	code.val( code.val() + tab(6) +	'<?php\r\n');
-	code.val( code.val() + tab(6) +	'echo "</tr>";\r\n');
+	code.val( code.val() + tab(8) +	'</td>\r\n');
+	code.val( code.val() + tab(7) +	'<?php\r\n');
+	code.val( code.val() + tab(7) +	'echo "</tr>";\r\n');
+	code.val( code.val() + tab(6) +	'}\r\n');
 	code.val( code.val() + tab(5) +	'}\r\n');
 	code.val( code.val() + tab(4) +	'?>\r\n');
 	//end output data
@@ -340,6 +343,8 @@ function buildCreateForm(){
 	code.val( code.val() + '\r\n');
 	
 	code.val(  code.val() + tab(0) + '<?php');
+	code.val( code.val() + tab(1) +	'include "include.php";\r\n');
+	code.val( code.val() + tab(1) +	'include "' + oName + '.php";\r\n');
 	code.val(  code.val() + tab(1) + '$conn = getConnection(); //set to DB Conn');
 	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + oName + '($conn);');
 	code.val(  code.val() + tab(1) + '$showForm = 1;');
@@ -404,12 +409,17 @@ function buildUpdateForm(){
 	
 	
 	code.val(  code.val() + tab(0) + '<?php');
+	code.val( code.val() + tab(1) +	'include "include.php";\r\n');
+	code.val( code.val() + tab(1) +	'include "' + oName + '.php";\r\n');
 	code.val(  code.val() + tab(1) + '$conn = getConnection(); //set to DB Conn');
 	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + oName + '($conn);');
 	code.val(  code.val() + tab(1) + '$showForm = 1;');
 	
 	code.val(  code.val() + tab(1) + 'if(strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {');
 	code.val(  code.val() + tab(2) + '$' + frmName + '->getFromPost();');
+	code.val(  code.val() + tab(2) + '$' + frmName + '->setID( $_POST["' + frmName + 'ID"] );');
+	//set the id!
+	
 	
 	code.val(  code.val() + tab(2) + 'if( $' + frmName + '->save() > 0 && $' + frmName + '->getErrorCount() == 0){');
 	
@@ -444,7 +454,7 @@ function buildUpdateForm(){
 	code.val(  code.val() + tab(0) + '?>' );
 	
 	
-	code.val( code.val() + tab(0) + '<form name="update' + oName + '" id="update' + oName + '" method="POST" action="update' + oName +'.php" enctype="multipart/form-data">' );
+	code.val( code.val() + tab(0) + '<form name="modify' + oName + '" id="modify' + oName + '" method="POST" action="modify' + oName +'.php" enctype="multipart/form-data">' );
 	
 	getFormInnards( 'UpdatePage'  );
 	
@@ -491,9 +501,10 @@ function buildDeleteForm(){
 	
 	
 	code.val( code.val() + '<?php');
+	code.val( code.val() + tab(2) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(2) +	'$conn = getConnection(); //create DB Connection \r\n');
 	code.val( code.val() + tab(2) +	'include "' + oName + '.php";\r\n');
-	code.val( code.val() + tab(2) + '$' + frmName + ' = new ' + oName + '( $conn )\r\n');
+	code.val( code.val() + tab(2) + '$' + frmName + ' = new ' + oName + '( $conn );\r\n');
 	
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '\r\n');
