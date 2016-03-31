@@ -1,3 +1,7 @@
+/*
+{"mode":"form","keys":"%5B%7B%22name%22:%22name%22,%22label%22:%22Name%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22%22,%22placeHolder%22:%22your%20name%22,%22chkRestrictDates%22:false,%22startYr%22:%220%22,%22frmYr%22:%220%22,%22to%22:%220%22,%22restrictLength%22:false,%22min_length%22:%220%22,%22max_length%22:%2245%22,%22restrictAmount%22:false,%22min_amount%22:%220%22,%22max_amount%22:%220%22,%22listType%22:%22textarea%22,%22list%22:%22%22,%22pattern%22:%22undefined%22,%22listObjectName%22:%22%22,%22listObjectKeyFunction%22:%22%22,%22listObjectTitleFunction%22:%22%22%7D,%7B%22name%22:%22friend%22,%22label%22:%22Select%20People%22,%22type%22:%22select%22,%22required%22:true,%22errText%22:%22%22,%22placeHolder%22:%22-=Select=-%22,%22chkRestrictDates%22:false,%22startYr%22:%220%22,%22frmYr%22:%220%22,%22to%22:%220%22,%22restrictLength%22:false,%22min_length%22:%220%22,%22max_length%22:%2245%22,%22restrictAmount%22:false,%22min_amount%22:%220%22,%22max_amount%22:%220%22,%22listType%22:%22object%22,%22list%22:%22%22,%22pattern%22:%22undefined%22,%22listObjectName%22:%22person%22,%22listObjectKeyFunction%22:%22id%22,%22listObjectTitleFunction%22:%22name%22%7D%5D","classname":"person","listBy":true,"getBy":true,"buildCRUD":"undefined","defaultSize":"45"}
+*/
+
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
@@ -77,14 +81,7 @@ function addFormRow(){
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
 			'<div class="formRow">' + 
 				'<div class="tools"><button class="up"> &uarr; </botton><button class="down"> &darr; </button> <button class="delete">X</button></div>' +
-				'<div class="item_variableName">' + 
-					'<label>Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/></label>' +
-				'</div>' +
-				
-				'<div class="item_label">' + 
-					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
-				'</div>' + 
-				
+							
 				'<div class="item_type">' + 
 					//<option value="telephone">telephone</option><option value="File">File</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option>
 					'<label>Type: ' +
@@ -105,6 +102,14 @@ function addFormRow(){
 					'</label>' + 
 				'</div>' + 
 				
+				'<div class="item_label">' + 
+					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
+				'</div>' + 
+				
+				'<div class="item_variableName">' + 
+					'<label>Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/></label>' +
+				'</div>' +
+				
 				'<div class="item_required">' + 				
 					'<label>Required: <input type="checkbox" name="item_required"/></label>' + 
 				'</div>' + 
@@ -112,6 +117,11 @@ function addFormRow(){
 				'<div class="item_error" style="display: none">' + 
 					'<label>Error Text: <input type="text" value="" /></label>' +
 				'</div>' + 
+				
+				'<div class="item_placeholder">' + 
+					'<label>Placeholder: <input type="text" name="placeholder" placeholder="placeholder Text" value="" /></label>' +
+				'</div>' + 
+				
 				
 				'<div class="item_date" style="display: none"> Date: ' +
 					/*
@@ -153,11 +163,21 @@ function addFormRow(){
 				
 				'<div class="type_list" style="display: none">' + 
 					'<p>Feed From object or textarea?</p>' +
-					'<input type="radio" value="textarea" checked/> Textarea <input type="radio" value="object" /> Object<br />' +
+					'<input type="radio" name="' + id + '_list_type" value="textarea" checked/> Textarea <input name="' + id + '_list_type" type="radio" value="object" /> Object<br />' +
 					'<textarea class="list" placeholder="comma seperated list of items"></textarea>' +  
 					
 					'<div class="objectDetails" style="display: none">' +
 						'<p>Object name is the name of the other object, value is the value feild stored, title is what is presented to the end user. These should be properties of the object, eg id, title</p>' +
+						'<p><input type="text" name="objectName" placeholder="person" style="text-transform: capitalize;" required/> <i>eg Person</i><br />' +
+						'<input type="text" placeholder="id" name="objectKey" required/><i>eg:this would be ID as we want to record the ID of the person</i><br />' +
+						'<input type="text" placeholder="name" name="objectTitle" required/><i>eg:this would be Name as we want to present the name of the person, but record the ID. Title and Key can be the same</i></p>' +
+						
+						
+						
+						/*Value type!!!!*/
+						
+						
+						
 						//object name
 						//option value from
 						//option title from
@@ -294,6 +314,16 @@ function addFormRow(){
 			}
 		});
 
+		$('#formSection_' + id + ' .type_list input[type="radio"]').change(function(event){
+			if( $(this).val() == "textarea" ){
+				$(this).parent().find('.objectDetails').hide();
+				$(this).parent().find('textarea.list').show();
+			}else{
+				$(this).parent().find('.objectDetails').show();
+				$(this).parent().find('textarea.list').hide();
+			}
+		});
+		
 	
 	});
 }
@@ -310,7 +340,7 @@ function addFormRow(){
 					'type':  $(this).find('.item_type select option:selected').val(),
 					'required': $(this).find('.item_required input').prop("checked"),
 					'errText': $(this).find('.item_error input').val(),
-					
+					'placeHolder' : $(this).find('.item_placeholder input').val(),
 					//item_date
 					'chkRestrictDates' :	 $(this).find('.item_date > input[name="item_restrictDates"]').prop("checked"),
 					'startYr' :	 $(this).find('.item_date .item_restrict_dates input[name="startYr"]').val(),
@@ -329,12 +359,21 @@ function addFormRow(){
 						
 					//type_code
 					//type_list
+					'listType' : $(this).find('.type_list > input[type="radio"]:checked').val(),
 					'list' : encodeURI( $(this).find('.type_list textarea').val() ),
 					//type_repeat_section
 					//type_pattern
-					'pattern' : encodeURI( $(this).find('.type_pattern textarea').val() )
+					'pattern' : encodeURI( $(this).find('.type_pattern textarea').val() ),
+					
+					'listObjectName' : $(this).find('.type_list  .objectDetails input[name="objectName"]').val(),
+					'listObjectKeyFunction' : $(this).find('.type_list  .objectDetails input[name="objectKey"]').val(),
+					'listObjectTitleFunction' :  $(this).find('.type_list  .objectDetails input[name="objectTitle"]').val()
+					
+					
 					
 				}
+				console.log( row );
+				
 				rows.push( row );
 			});
 			return rows;
@@ -1210,7 +1249,7 @@ $(function(){
 			var o = jsonParse( loadStr );
 			if(  o === Object(o) ){
 				 
-				console.log( o );
+				//console.log( o );
 				$('input:radio[name="mode"][value="' + o.mode + '"]').prop('checked',true);
 				$('input:radio[name="mode"]').click();
 				
@@ -1220,6 +1259,9 @@ $(function(){
 				}else{
 					var keys = jsonParse( decodeURI( o.keys ) );
 					$('#formMode .formSection').remove();
+					
+					console.log( keys );
+					
 					for(var k=0; k < keys.length; k++){
 						$('#addFormInput').click();
 						var lastRow = $('#formMode .formSection').last().attr('id');
@@ -1231,6 +1273,7 @@ $(function(){
 						$('#' + lastRow + ' .item_type select').change(); //trigger change
 						
 						$('#' + lastRow + ' .item_error input').val( keys[k].errText );					//error message
+						$('#' + lastRow + ' .item_placeholder input').val( keys[k].placeHolder );		//placeholder message
 						$('#' + lastRow + ' .item_required input').prop('checked', keys[k].required ); 	//required
 						
 						//$('#' + lastRow + ' .item_date > input[name="item_restrictDates"]').prop("checked",  keys[k].chkRestrictDates );
@@ -1257,31 +1300,18 @@ $(function(){
 						$('#' + lastRow + ' .type_pattern textarea').val(  decodeURI(keys[k].pattern ) ); 
 						
 						
+						$('#' + lastRow + ' .type_list > input[value="' + keys[k].listType + '"]').prop('checked',true);
+						$('#' + lastRow + ' .type_list > input[value="' + keys[k].listType + '"]').change();
 						
-						/*
-						//item_date
-					'chkRestrictDates' :	 $(this).find('.item_date > input[name="item_restrictDates"]').prop("checked"),
-					'startYr' :	 $(this).find('.item_date .item_restrict_dates input[name="startYr"]').val(),
-					'frmYr'	:  $(this).find('.item_date .item_restrict_dates input[name="from"]').val(),
-					'to' :	 $(this).find('.item_date .item_restrict_dates input[name="to"]').val(),
-						
-					//type_text type_number type_textarea
-					'restrictLength': 	 $(this).find('.type_text.type_number.type_textarea input[name="item_restrictLength"]').prop("checked"),
-					'min_length': $(this).find('.type_text.type_number.type_textarea .item_restrict_length input[name="min_length"]').val(),
-					'max_length': $(this).find('.type_text.type_number.type_textarea .item_restrict_length  input[name="max_length"]').val(),
-						
-					//type_number
-					'restrictAmount':  $(this).find('.type_number input[name="item_restrictAmount"]').prop("checked"),	
-					'min_amount': $(this).find('.type_number .item_restrict_amount input[name="min_amount"]').val(),
-					'max_amount': $(this).find('.type_number .item_restrict_amount input[name="max_amount"]').val(),
-						
-					//type_code
-					//type_list
-					'list' : encodeURI( $(this).find('.type_list textarea').val() ),
-					//type_repeat_section
-					//type_pattern
-					'pattern' : encodeURI( $(this).find('.type_pattern textarea').val() )
-						*/
+						if(keys[k].listType == "object" ){
+							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectName"]').val(  keys[k].listObjectName );
+							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectKey"]').val(  keys[k].listObjectKeyFunction );
+							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectTitle"]').val(  keys[k].listObjectTitleFunction );
+						}	
+							
+							
+							
+					
 						
 						
 					}

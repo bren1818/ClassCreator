@@ -121,9 +121,16 @@ function getFormInnards(code, frmName){
 		var minAmount = 0;
 		var maxAmount = 0;
 		var pattern =  $(this).find('.type_pattern textarea').val();
-		
+		var placeHolder = "";
 		var restrictDate= $(this).find('.item_date input[name="item_restrictDates"]').prop('checked');
 		
+		var list_type = $(this).find(' .type_list > input[type="radio"]:checked').val();
+		
+		var listObjectName = $(this).find('.type_list  .objectDetails input[name="objectName"]').val();
+		var listObjectKeyFunction = $(this).find('.type_list  .objectDetails input[name="objectKey"]').val();
+		var listObjectTitleFunction = $(this).find('.type_list  .objectDetails input[name="objectTitle"]').val();
+		//
+		console.log("Oname: " + listObjectName +" OKey:" + listObjectKeyFunction + " OTitle" + listObjectTitleFunction);
 		
 		if( variable == "" ){
 			return;
@@ -182,6 +189,10 @@ function getFormInnards(code, frmName){
 			
 			
 		}else if(type == "select"){
+			
+
+			if( list_type == "textarea"){
+			
 			//set values for select
 			var vals =  $(this).find('.type_list textarea').val();
 			var valStr = "";
@@ -209,6 +220,24 @@ function getFormInnards(code, frmName){
 			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
 			
+			}else if(list_type == "object"){
+				
+				/*In progress */
+				
+				
+				code.val( code.val() + tab(3) + 'Objecterino!!');
+				
+				code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
+				
+				code.val( code.val() + tab(5) + '<option value="incomplete">Need to implement</option>');
+				
+				code.val( code.val() + tab(3) + '</select>');
+				
+			}
+			
+			
+			
+			
 		}else if( type == "checkbox" ){
 			
 			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
@@ -228,6 +257,11 @@ function getFormInnards(code, frmName){
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
 		
 		}else if (type == "selectMultiple" || type == "radioGroup" || type == "checkGroup" ){
+			
+			////////////////
+			
+			
+			
 			var vals =  $(this).find('.type_list textarea').val();
 			var valStr = "";
 			vals = vals.split(",");
@@ -345,6 +379,12 @@ function buildCreateForm(){
 	code.val(  code.val() + tab(0) + '<?php');
 	code.val( code.val() + tab(1) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(1) +	'include "' + oName + '.php";\r\n');
+	
+	//check if any instances of list and see if any unique classes need to be added !!!!!!!!!!!!!!!
+	
+	
+	
+	
 	code.val(  code.val() + tab(1) + '$conn = getConnection(); //set to DB Conn');
 	code.val(  code.val() + tab(1) + '$' + frmName + ' = new ' + oName + '($conn);');
 	code.val(  code.val() + tab(1) + '$showForm = 1;');
