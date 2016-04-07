@@ -169,8 +169,8 @@ function addFormRow(){
 					'<div class="objectDetails" style="display: none">' +
 						'<p>Object name is the name of the other object, value is the value feild stored, title is what is presented to the end user. These should be properties of the object, eg id, title</p>' +
 						'<p><input type="text" name="objectName" placeholder="person" style="text-transform: capitalize;" required/> <i>eg Person</i><br />' +
-						'<input type="text" placeholder="id" name="objectKey" required/><i>eg:this would be ID as we want to record the ID of the person</i><br />' +
-						'<input type="text" placeholder="name" name="objectTitle" required/><i>eg:this would be Name as we want to present the name of the person, but record the ID. Title and Key can be the same</i></p>' +
+						'<input type="text" placeholder="id (key)" name="objectKey" required/><i>eg:this would be ID as we want to record the ID of the person</i><br />' +
+						'<input type="text" placeholder="name (display value)" name="objectTitle" required/><i>eg:this would be Name as we want to present the name of the person, but record the ID. Title and Key can be the same</i></p>' +
 						
 						
 						

@@ -178,11 +178,11 @@ function getFormInnards(code, frmName){
 			code.val( code.val() + tab(3) + '<input type="email" name="' + variable + '" id="' + variable + '" value="<?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?>" ' + (restrictLength ? 'pattern=".{' + min + ',' + max + '}" ' : '') + 'title="' + errText + '" ' + (required ? 'required="required" ' : '')  + '/>');
 			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
-		}else if( type == "textarea" ){
+		}else if( type == "textarea" || type == "wysiwyg" ){
 		
 			/*Textarea*/
 			
-			code.val( code.val() + tab(3) + '<textarea name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required" ' : '') + (restrictLength ? ' maxlength=' + max + ' minlength=' + min : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
+			code.val( code.val() + tab(3) + '<textarea ' + (type == "wysiwyg" ? 'class="wysiwyg" ' : '') + ' name="' + variable + '" id="' + variable + '" ' + (required ? ' required="required" ' : '') + (restrictLength ? ' maxlength=' + max + ' minlength=' + min : '') + ' title="' + errText + '" ' + '><?php echo (isset($' + frmName + ') ?  $' + frmName + '->get' + variable.capitalize() + '() : \'\'); ?></textarea>');
 			
 			
 			variables.val( variables.val() + '\r\n' + variable +', ' + 'mt');
@@ -193,43 +193,70 @@ function getFormInnards(code, frmName){
 
 			if( list_type == "textarea"){
 			
-			//set values for select
-			var vals =  $(this).find('.type_list textarea').val();
-			var valStr = "";
-			vals = vals.split(",");
-			for(var v=0; v < vals.length; v++){
-				valStr += '"' + vals[v] + '"';
-				if( ((v + 1) < vals.length) ){
-				valStr += ', '
+				//set values for select
+				var vals =  $(this).find('.type_list textarea').val();
+				var valStr = "";
+				vals = vals.split(",");
+				for(var v=0; v < vals.length; v++){
+					valStr += '"' + vals[v] + '"';
+					if( ((v + 1) < vals.length) ){
+					valStr += ', '
+					}
 				}
-			}
-			//get variable
-			code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
-			code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
-			code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
-			code.val( code.val() + tab(3) + '}else{');
-				code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
-			code.val( code.val() + tab(3) + '} ?>');
-			
-			
-			code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
-			code.val( code.val() + tab(4) + '<?php for($v=0; $v < sizeof($' + variable + '_values); $v++){ ?>');
-			code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$v]; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
-			code.val( code.val() + tab(4) + '<?php } ?>');
-			code.val( code.val() + tab(3) + '</select>');
-			
-			variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
+				//get variable
+				code.val( code.val() + tab(3) + '<?php $' + variable + '_values = array(' + valStr + '); ?>');	
+				code.val( code.val() + tab(3) + '<?php if( isset( $' + frmName + ') && $' + frmName +'->get' + variable.capitalize() + '() != null ){');
+				code.val( code.val() + tab(4) + ' $' + variable + '_selected = $' + frmName +'->get' + variable.capitalize() + '();');
+				code.val( code.val() + tab(3) + '}else{');
+					code.val( code.val() + tab(4) + ' $' + variable + '_selected = "";');
+				code.val( code.val() + tab(3) + '} ?>');
+				
+				
+				code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
+				code.val( code.val() + tab(4) + '<?php for($v=0; $v < sizeof($' + variable + '_values); $v++){ ?>');
+				code.val( code.val() + tab(5) + '<option value="<?php echo $'+ variable +'_values[$v]; ?>" <?php if($'+ variable +'_values[$v] ==  $' + variable + '_selected ){ echo "selected"; } ?>><?php echo $'+ variable +'_values[$v]; ?></option>' );
+				code.val( code.val() + tab(4) + '<?php } ?>');
+				code.val( code.val() + tab(3) + '</select>');
+				
+				variables.val( variables.val() + '\r\n' + variable +', ' + 'i');
 			
 			}else if(list_type == "object"){
 				
+				variables.val( variables.val() + '\r\n' + variable +', ' + 'v');
+				
+				
+				
 				/*In progress */
+				code.val( code.val() + tab(3) + '<?php');
 				
+				code.val( code.val() + tab(4) + '// $conn = getConnection();');
+				code.val( code.val() + tab(4) + '// include "' +  listObjectName.capitalize() + '.php";');
+				code.val( code.val() + tab(4) + '// $' + listObjectName + ' = new ' + listObjectName.capitalize() + '($conn); ');
+				code.val( code.val() + tab(4) + '$query = $conn->prepare("SELECT `' +  listObjectKeyFunction + '`, `' + listObjectTitleFunction + '` FROM `' + listObjectName + '`");');
+			
+				code.val( code.val() + tab(3) + '?>');
 				
-				code.val( code.val() + tab(3) + 'Objecterino!!');
+				//code.val( code.val() + tab(3) + 'Objecterino!!');
 				
 				code.val( code.val() + tab(3) + '<select name="' + variable  + '"' + (required ? ' required="required" ' : '') +'>');
+				code.val( code.val() + tab(3) + '<?php');
+				code.val( code.val() + tab(4) + '$default = isset($' + frmName + ') ? $' + frmName + '->get' + variable.capitalize() + '() : "' + placeHolder + '";');
 				
-				code.val( code.val() + tab(5) + '<option value="incomplete">Need to implement</option>');
+				code.val( code.val() + tab(4) + 'if( $query->execute() ){');
+				code.val( code.val() + tab(5) + 'while( $result = $query->fetchObject("' + listObjectName.capitalize() + '") ){');
+				code.val( code.val() + tab(6) + "if( $default == $result->get" + listObjectKeyFunction.capitalize() + "() ){");		
+				code.val( code.val() + tab(7) + "echo '<option value=\"'.$result->get" + listObjectKeyFunction.capitalize() + "().'\" selected>'.$result->get" + listObjectTitleFunction.capitalize() + "().'</option>';");	
+				code.val( code.val() + tab(6) + "}else{");
+				code.val( code.val() + tab(7) + "echo '<option value=\"'.$result->get" + listObjectKeyFunction.capitalize() + "().'\">'.$result->get" + listObjectTitleFunction.capitalize() + "().'</option>';");	
+				code.val( code.val() + tab(6) + "}");
+				
+				
+				code.val( code.val() + tab(5) + '}');
+
+				code.val( code.val() + tab(4) + '}');
+				
+				code.val( code.val() + tab(3) + '?>');
+				//code.val( code.val() + tab(5) + '<option value="incomplete">Need to implement</option>');
 				
 				code.val( code.val() + tab(3) + '</select>');
 				
