@@ -272,3 +272,11 @@ html>body .pageContentSection.Expand {
 			display: block;
 			clear: both;
 		}
+		
+		.ajaxControls,
+		.ajaxCode{ display: none; }
+		.showAjaxControls .ajaxControls,
+		.showAjaxControls .ajaxCode{ display: block; }
+		
+		.formSection .formRow > .ajaxControls{ width: 100%; clear: both;}
+		

@@ -81,7 +81,14 @@ function addFormRow(){
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
 			'<div class="formRow">' + 
 				'<div class="tools"><button class="up"> &uarr; </botton><button class="down"> &darr; </button> <button class="delete">X</button></div>' +
-							
+				
+		'<div class="ajaxControls">' +
+					'<p>Show in Admin Interface? </p>' +
+					'<p>use when Querying </p>' +
+					
+				'</div>' +
+
+				
 				'<div class="item_type">' + 
 					//<option value="telephone">telephone</option><option value="File">File</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option>
 					'<label>Type: ' +
@@ -193,6 +200,9 @@ function addFormRow(){
 					'<p>Input a Regex pattern: eg: "[\+]{0,1}?\d{0,1}?[\(]{0,1}?\d{3}[\)]{0,1}?\d{3}[\-]{0,1}?\d{4}" for a phone number</p>' +
 					'<textarea></textarea>' +
 				'</div>' +
+				
+				
+		
 			'</div>' + 
 			
 		'</div>';
@@ -404,12 +414,23 @@ function addFormRow(){
 
 **/	
 	
-function makeCodeEditor(id){
+function makeCodeEditor(id, EditorMode){
+	
+
+	//var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("" + id + ""));
+	//console.log( myCodeMirror );
+	//var tableName = "";
+	//	if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
+	//		$( generatedCode.getWrapperElement() ).remove();
+	//	}
 	
 	var generatedForm;
 	generatedForm = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
 		lineNumbers: true,
-		mode: "text/html", 
+		mode: EditorMode, //"text/html", 
+		indentUnit: 4,
+		indentWithTabs: true,
+		matchBrackets: true,
 		extraKeys: { 
 			"F11": function(cm) {
 			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
@@ -422,10 +443,6 @@ function makeCodeEditor(id){
 	});
 }
 
-	
-
-
-	
 	
 function buildForm(){
 	var code = $('#generatedFORM');
@@ -460,29 +477,13 @@ function buildForm(){
 	
 	if( ! $('#buildCrud').prop('checked')  ){
 		//show the form
-		makeCodeEditor('generatedFORM');
+		makeCodeEditor('generatedFORM', "text/html");
 	}else{
 		//hide the form
 		$('#generatedFORM').hide();
 	}
 	
-	/*
-	var generatedForm;
 	
-	generatedForm = CodeMirror.fromTextArea(document.getElementById("generatedFORM"), {
-		lineNumbers: true,
-		mode: "text/html", 
-		extraKeys: { 
-			"F11": function(cm) {
-			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-			},
-			"Esc": function(cm) {
-			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-			},
-			"Ctrl-Space": "autocomplete"
-		}
-	});
-	*/
 	makeSaveString();
 	
 	$('input[name="mode"][value="advanced"]').prop("checked", true);
@@ -553,8 +554,11 @@ function adminPageDownload(type){
 			var name = 'delete' + className + '.php';
 			saveTextAsFile('DeletePage', name);
 		}else if(type == "Include"){
-		var name = 'include.php';
+			var name = 'include.php';
 			saveTextAsFile('generatedConn', name);
+		}else if(type=="Ajax"){
+			var name = 'ajaxTable' + className + '.php';
+			saveTextAsFile('GenAjaxCode', name);
 		}
 		
 		
@@ -594,12 +598,24 @@ $(function(){
 	$('#buildCrud').click(function(e){
 		if( $(this).prop("checked") ){
 			$('#crudInterfaces').show();
+			$('#buildAjaxControls').show();
+			$('body').removeClass('showAjaxControls');
 		}else{
 			$('#crudInterfaces').hide();
+			$('#buildAjaxControls').hide();
+			$('body').removeClass('showAjaxControls');
 		}
 	
 	});
 	
+	$('#buildAjax').click(function(e){
+		if( $(this).prop("checked") ){
+			$('body').addClass('showAjaxControls');
+		}else{
+			$('body').removeClass('showAjaxControls');
+		}
+		
+	});
 	
 	
 	
@@ -640,7 +656,7 @@ $(function(){
 				buildCreateForm();
 				buildUpdateForm();
 				buildDeleteForm();
-				
+				buildAjaxTable();
 				makeSaveString();
 				//$('input[name="mode"][value="form"]').prop("checked", true);
 				buildForm();
@@ -1187,51 +1203,8 @@ $(function(){
 		
 		sql.val( sql.val() + '\r\n);');
 		
-		//console.log( types );
-		
-		/*
-		CREATE TABLE  `test` (
-		`id` INT NULL DEFAULT NULL AUTO_INCREMENT PRIMARY KEY ,
-		`varchar` VARCHAR( 55 ) NOT NULL ,
-		`integer` INT NOT NULL ,
-		`longtext` LONGTEXT NOT NULL
-		`a` TIMESTAMP NOT NULL ,
-		`bool` BOOLEAN NOT NULL
-		);
-		*/
-		//sql.trigger('autosize.resize');
-		
-			generatedCode = CodeMirror.fromTextArea(document.getElementById("generatedCode"), {
-				lineNumbers: true,
-				matchBrackets: true,
-				mode: "text/x-php",
-				indentUnit: 4,
-				indentWithTabs: true,
-				extraKeys: { 
-					"F11": function(cm) {
-					  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-					},
-					"Esc": function(cm) {
-					  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-					},
-					"Ctrl-Space": "autocomplete"
-				}
-			});
-			
-			generatedSQL = CodeMirror.fromTextArea(document.getElementById("generatedSQL"), {
-				lineNumbers: true,
-				mode: "text/javascript", 
-				extraKeys: { 
-					"F11": function(cm) {
-					  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-					},
-					"Esc": function(cm) {
-					  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-					},
-					"Ctrl-Space": "autocomplete"
-				}
-			});
-		
+		makeCodeEditor('generatedCode', "text/x-php");
+		makeCodeEditor('generatedSQL', "text/javascript");
 		
 		
 	});
@@ -1342,40 +1315,14 @@ $(function(){
 	
 	$('textarea').autosize();   
 
-	defaultCSS = CodeMirror.fromTextArea(document.getElementById("defaultCSS"), {
-		lineNumbers: true,
-		matchBrackets: true,
-		mode: "text/css",
-		indentUnit: 4,
-		indentWithTabs: true,
-		extraKeys: { 
-			"F11": function(cm) {
-			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-			},
-			"Esc": function(cm) {
-			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-			},
-			"Ctrl-Space": "autocomplete"
-		}
-	});
+	makeCodeEditor("defaultCSS", "text/css");
+	makeCodeEditor("generatedConn", "text/x-php");
 	
 	
-	generatedConn = CodeMirror.fromTextArea(document.getElementById("generatedConn"), {
-		lineNumbers: true,
-		matchBrackets: true,
-		mode: "text/x-php",
-		indentUnit: 4,
-		indentWithTabs: true,
-		extraKeys: { 
-			"F11": function(cm) {
-			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-			},
-			"Esc": function(cm) {
-			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-			},
-			"Ctrl-Space": "autocomplete"
-		}
-	});
+	//if( $('#buildAjax').prop("checked") ){
+	//	buildAjaxTable();
+	//}
+	
 	
 	$('input:radio[name=mode]').filter(":checked").change();
 	

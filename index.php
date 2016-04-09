@@ -88,6 +88,8 @@
 					<br /><br />
 					<input type="checkbox" name="buildCrud" value="1" id="buildCrud" /> Build CRUD interfaces<br />
 					
+					<div id="buildAjaxControls" style="display: none;"><input type="checkbox" name="buildAjax" value="1" id="buildAjax" /> Build Ajax Table interfaces and show toggles</div><br />
+					
 					
 					<br /><br />
 					<button id="generate">Generate Code</button>
@@ -125,6 +127,11 @@
 						<textarea id="DeletePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
 						<a class="download" onClick="adminPageDownload('Delete')">Download Delete Page</a>
 						
+						<div class="ajaxCode">
+							<h2><u>A</u>jax</h2>
+							<textarea id="GenAjaxCode" style="width: 100%; min-height: 50px; display:none;"></textarea>
+							<a class="download" onClick="adminPageDownload('Ajax')">Download Ajax Page</a>
+						</div>
 					</div>
 					
 					<h2>Default CSS</h2>					
