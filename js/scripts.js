@@ -82,10 +82,9 @@ function addFormRow(){
 			'<div class="formRow">' + 
 				'<div class="tools"><button class="up"> &uarr; </botton><button class="down"> &darr; </button> <button class="delete">X</button></div>' +
 				
-		'<div class="ajaxControls">' +
-					'<p>Show in Admin Interface? </p>' +
-					'<p>use when Querying </p>' +
-					
+				'<div class="ajaxControls">' +
+					'<p><input type="checkbox" name="showAdmin" value="1" />: Show in Admin Interface? ' +
+					'<input type="checkbox" name="useQuery" value="1" />: Use for search Querying </p>' +	
 				'</div>' +
 
 				
@@ -110,7 +109,7 @@ function addFormRow(){
 				'</div>' + 
 				
 				'<div class="item_label">' + 
-					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
+					'<label>Label: <input type="text" name="label" value="" style="text-transform: lowercase;" required="required"/></label>' +
 				'</div>' + 
 				
 				'<div class="item_variableName">' + 
@@ -377,12 +376,14 @@ function addFormRow(){
 					
 					'listObjectName' : $(this).find('.type_list  .objectDetails input[name="objectName"]').val(),
 					'listObjectKeyFunction' : $(this).find('.type_list  .objectDetails input[name="objectKey"]').val(),
-					'listObjectTitleFunction' :  $(this).find('.type_list  .objectDetails input[name="objectTitle"]').val()
+					'listObjectTitleFunction' :  $(this).find('.type_list  .objectDetails input[name="objectTitle"]').val(),
 					
+					'showAdmin': $(this).find('input[name="showAdmin"]').prop("checked"),
+					'useQuery': $(this).find('input[name="useQuery"]').prop("checked")
 					
 					
 				}
-				console.log( row );
+				//console.log( row );
 				
 				rows.push( row );
 			});
@@ -402,6 +403,7 @@ function addFormRow(){
 			'listBy' : $('input[name="includeListby"]').prop("checked"),
 			'getBy' : $('input[name="includeGetby"]').prop("checked"),
 			'buildCRUD' : $('input[name="name="buildCrud"]').prop("checked"),
+			'buildAjax' : $('input[name="name="buildAjax"]').prop("checked"),
 			'defaultSize' : $('#defaultVarcharLength').val()
 		}
 		$('#saveString').val( array2json(SaveString) );
@@ -1233,7 +1235,7 @@ $(function(){
 					var keys = jsonParse( decodeURI( o.keys ) );
 					$('#formMode .formSection').remove();
 					
-					console.log( keys );
+				//	console.log( keys );
 					
 					for(var k=0; k < keys.length; k++){
 						$('#addFormInput').click();
@@ -1282,14 +1284,16 @@ $(function(){
 							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectTitle"]').val(  keys[k].listObjectTitleFunction );
 						}	
 							
-							
+						$('#' + lastRow ).find('input[name="showAdmin"]').prop("checked", keys[k].showAdmin);
+						$('#' + lastRow ).find('input[name="useQuery"]').prop("checked", keys[k].useQuery);
+						
 							
 					
 						
 						
 					}
 					
-					console.log( keys );
+					//console.log( keys );
 					
 					/*
 					
@@ -1305,6 +1309,9 @@ $(function(){
 				$('input[name="includeGetby"]').prop("checked", o.getBy);
 				if( o.buildCRUD ){
 					$('input[name="buildCrud"]').click();
+					if( o.buildAjax ){
+						$('input[name="buildAjax"]').click();
+					}
 				}
 				
 			}

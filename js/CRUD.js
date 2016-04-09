@@ -88,10 +88,17 @@ function buildAdminForm(){
 	code.val( code.val() + tab(2) +	'$(function(){\r\n');
 	code.val( code.val() + tab(3) +	'/* Optional Configurations commented out */\r\n');
 	code.val( code.val() + tab(3) +	'$("#tbl_'+ oName + 's").DataTable({\r\n');	
-	code.val( code.val() + tab(4) +	'//"processing": true,\r\n');	
-	code.val( code.val() + tab(4) +	'//"serverSide": false,\r\n');	
-	code.val( code.val() + tab(4) +	'//"ajax": "/admin/' + oName + '_table.php",\r\n');	
+	
+	if(  $('#buildAjax').prop('checked') == true ){
+	
+	code.val( code.val() + tab(4) +	'"processing": true,\r\n');	
+	code.val( code.val() + tab(4) +	'"serverSide": true,\r\n');	
+	code.val( code.val() + tab(4) +	'"ajax": "ajaxTable' + oName + '.php",\r\n');	
 	code.val( code.val() + tab(4) +	'//"columns" :  [ {"name": "0", "orderable": "true"}, {"name": "1", "orderable": "true"}, {"name": "2", "orderable": "true"}, {"name": "3", "orderable": "true"} ]\r\n');	
+	
+	}
+	
+	
 	code.val( code.val() + tab(3) +	'});\r\n');
 	code.val( code.val() + tab(2) +	'});\r\n');	
 	code.val( code.val() + '</script>\r\n');
@@ -130,7 +137,7 @@ function getFormInnards(code, frmName){
 		var listObjectKeyFunction = $(this).find('.type_list  .objectDetails input[name="objectKey"]').val();
 		var listObjectTitleFunction = $(this).find('.type_list  .objectDetails input[name="objectTitle"]').val();
 		//
-		console.log("Oname: " + listObjectName +" OKey:" + listObjectKeyFunction + " OTitle" + listObjectTitleFunction);
+		//console.log("Oname: " + listObjectName +" OKey:" + listObjectKeyFunction + " OTitle" + listObjectTitleFunction);
 		
 		if( variable == "" ){
 			return;
@@ -377,7 +384,7 @@ function getFormInnards(code, frmName){
 		
 		
 		code.val( code.val() + tab(1) + '</div>' );
-		console.log(label,variable,type, required, restrictLength, errText, min, max);
+		//console.log(label,variable,type, required, restrictLength, errText, min, max);
 		
 		//set the class creator to 
 		
@@ -655,25 +662,82 @@ function buildAjaxTable(){
 	code.val( code.val() + tab(2) +	'if( $orderBy != "" && is_int($orderBy) ){\r\n');
 		code.val( code.val() + tab(3) +	'switch($orderBy){\r\n');
 		var variables = getFormVals("form");
+		var varcnt = 1;
+		code.val( code.val() + tab(4) +	'case 0:\r\n');
+		code.val( code.val() + tab(5) +	'$orderBy = "' + frmName +'.`id`";\r\n');
+		code.val( code.val() + tab(4) +	'break;\r\n');
+		
 		for(var obc = 0; obc < variables.length; obc++){
+			console.log(  variables[obc].showAdmin );
+			if( variables[obc].showAdmin == true ){
 				console.log( variables[obc].name );
+				//check showAdmin
+				
+				code.val( code.val() + tab(4) +	'case ' + varcnt + ':\r\n');
+				code.val( code.val() + tab(5) +	'$orderBy = "`' + variables[obc].name +'`";\r\n');
+				code.val( code.val() + tab(4) +	'break;\r\n');
+				varcnt++;
+				
+			}	
+				
 		}
-	
-	
-	
-	
-	
 			code.val( code.val() + tab(4) +	'default:\r\n');
-				code.val( code.val() + tab(5) +	'$orderBy = "' + frmName +'.`id`";\r\n');
+				code.val( code.val() + tab(5) +	'$orderBy = "`id`";\r\n');
 			code.val( code.val() + tab(4) +	'break;\r\n');
 	
 		code.val( code.val() + tab(3) +	'}\r\n');
 	code.val( code.val() + tab(2) +	'}else{\r\n');
-		code.val( code.val() + tab(3) +	'$orderBy = "' + frmName + '.`id`";\r\n');
+		code.val( code.val() + tab(3) +	'$orderBy = "`id`";\r\n');
 	code.val( code.val() + tab(2) +	'}\r\n');
 	/* Query Logic */
+	//useQuery && showAdmin
+	
+	code.val( code.val() + tab(2) +	'$query = "SELECT `id`,\r\n'); //' + frmName + '.
+	var selcount = 0;
+	var selFields = "";
+	for(var obc = 0; obc < variables.length; obc++){
+		if( variables[obc].showAdmin == true ){
+			selcount++;
+			selFields += '`' + variables[obc].name + '`,'; //frmName + '. 
+		}
+	}
+	if( selcount > 0 ){
+		code.val( code.val() + tab(3) + selFields.substring(0, selFields.length - 1) +   '\r\n');
+	}
+	code.val( code.val() + tab(2) + 'FROM\r\n');
+	code.val( code.val() + tab(3) + '`' + frmName + '`\r\n');
+	code.val( code.val() + tab(2) + 'WHERE\r\n');
+	//queryable?
+	
+	selFields = "";
+	
+	selFields = '".( $search != "" ? "'; 
+	selcount = 0;
+	for(var obc = 0; obc < variables.length; obc++){
+		if( variables[obc].useQuery == true ){
+			
+			selFields +=  ' (`' + variables[obc].name + '` ".($search != "" ? " LIKE :SEARCH" : "").") OR'; 
+	//(uf.`tags` ".($search != "" ? " LIKE :SEARCH": "").") OR 
+	//(a.`alias` ".($search != "" ? " LIKE :SEARCH": "").") OR 
+	//(uf.`uploader` ".($search != "" ? " LIKE :SEARCH": "").")" 
+			selcount++;
+		}
+	}
 	
 	
+	
+	if( selcount > 0){
+		selFields = selFields.substring(0, selFields.length - 3);
+	}
+	selFields += '" : " 1 ") ."';
+		
+	code.val( code.val() + tab(3) + selFields + '\r\n');
+	
+	
+	
+	code.val( code.val() + tab(2) + 'ORDER BY\r\n');
+	code.val( code.val() + tab(3) + '".$orderBy." ".$orderDir."\r\n');
+	code.val( code.val() + tab(2) + 'LIMIT :START,:LENGTH";\r\n');
 	
 	/*End Query*/
 	code.val( code.val() + tab(2) +	"$result = $conn->prepare($query);\r\n");
@@ -694,10 +758,29 @@ function buildAjaxTable(){
 		code.val( code.val() + tab(2) +	"$data[] =  array(\r\n");
 		
 			//$row['id'], '<a target="_blank" href="'.WEB_ROOT.UPLOAD_FOLDER_NAME.$row['path'].'">'.$row['file'].'</a>', ($row['alias'] == "" ? "-" : $row['alias']) , ($row['active']==1?'Yes':'No'), $row['campus'], $row['category'], $row['faculty'], $row['tags'], $row['type'], $row['uploader'], ($row['expiry'] == "0000-00-00 00:00:00" ? "" : substr($row['expiry'],0, 10) ) , '<a href="deleteFile.php?fileID='.$row['id'].'&key='.hash('md5',KEY.$row['path']).'">Delete</a> <a href="modifyFile.php?fileID='.$row['id'].'&key='.hash('md5',KEY.$row['path']).'">Modify</a>'
+	
+	selcount = 0;
+	selFields = "";
+	selFields += '$row["id"], ';
+	for(var obc = 0; obc < variables.length; obc++){
+		if( variables[obc].showAdmin == true ){
+			selFields += '$row["' + variables[obc].name + '"], ';
+			selcount++;
+		}
+	}	
+		
+	if( selcount > 0){
+		selFields = selFields.substring(0, selFields.length - 2);
+	}	
+	
+		code.val( code.val() + tab(3) + selFields + '\r\n');	
 		
 		
 		code.val( code.val() + tab(2) +	");\r\n");
 	code.val( code.val() + tab(2) +	"}\r\n");
+	
+	code.val( code.val() + tab(2) +	"if( sizeof($results) == 0 ){ $data = array(); }\r\n");
+	
 	
 	code.val( code.val() + tab(2) +	"$recordsFiltered =  sizeof( $data ) ;\r\n");
 	code.val( code.val() + tab(2) +	"ob_clean();\r\n");
