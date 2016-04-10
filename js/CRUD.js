@@ -454,11 +454,14 @@ function buildCreateForm(){
 	code.val(  code.val() + tab(2) + 'if( $' + frmName + '->save() > 0 && $' + frmName + '->getErrorCount() == 0){');
 	
 	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' saved successfully!</p>";'); 
+	code.val(  code.val() + tab(3) + 'echo "<p><a href=\'create' + oName + '.php\'>Add another' + oName + '</a> or <a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
+	
+	
 	code.val(  code.val() + tab(3) + '$showForm = 0;');
 	code.val(  code.val() + tab(2) + '}else{');
 	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' contained (".$' + frmName + '->getErrorCount().") error(s).</p>";'); 
 	code.val(  code.val() + tab(3) + 'echo "<p>Errors: ".$' + frmName + '->getErrors()."</p>";'); 
-	
+	code.val(  code.val() + tab(3) + 'echo "<p><a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
 	
 	code.val(  code.val() + tab(2) + '}');
 	
@@ -523,10 +526,13 @@ function buildUpdateForm(){
 	code.val(  code.val() + tab(2) + 'if( $' + frmName + '->save() > 0 && $' + frmName + '->getErrorCount() == 0){');
 	
 	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' updated successfully!</p>";'); 
+	code.val(  code.val() + tab(3) + 'echo "<p><a href=\'create' + oName + '.php\'>Create new ' + oName + '</a> or <a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
+	
 	code.val(  code.val() + tab(3) + '$showForm = 0;');
 	code.val(  code.val() + tab(2) + '}else{');
 	code.val(  code.val() + tab(3) + 'echo "<p>' + oName + ' contained (".$' + frmName + '->getErrorCount().") error(s).</p>";'); 
 	code.val(  code.val() + tab(3) + 'echo "<p>Errors: ".$' + frmName + '->getErrors()."</p>";'); 
+	code.val(  code.val() + tab(3) + 'echo "<p><a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
 	
 	
 	code.val(  code.val() + tab(2) + '}');
@@ -615,8 +621,11 @@ function buildDeleteForm(){
 	
 	code.val( code.val() + tab(3) + 'if( $' + frmName + '->delete() ){\r\n');
 	code.val( code.val() + tab(4) + 'echo "<p>' + oName + ' deleted Successfully</p>";\r\n');
+	code.val(  code.val() + tab(4) + 'echo "<p><a href=\'create' + oName + '.php\'>Create ' + oName + '</a> or <a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
+	
 	code.val( code.val() + tab(3) + '}else{\r\n');
 	code.val( code.val() + tab(4) + 'echo "<p>Error! Could not delete ' + oName + '</p>";\r\n');
+	code.val(  code.val() + tab(4) + 'echo "<p><a href=\'' + oName + 'Admin.php\'>Go back to ' + oName + ' management area</a></p>";'); 
 	code.val( code.val() + tab(3) + '}\r\n');
 	
 	code.val( code.val() + tab(2) +	'}else{\r\n');

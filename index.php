@@ -95,7 +95,7 @@
 					<button id="generate">Generate Code</button>
 					<br /><br />
 				</div>
-				
+				<button id="downloadEverything">Download Everything!</button>
 				<div class="col">
 					<h2>Generated Class</h2>
 					<p>Select editor and press F11 for full screen</p>

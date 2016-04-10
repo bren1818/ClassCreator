@@ -477,7 +477,7 @@ function buildForm(){
 	
 	//$('#preview').html( code.val() );
 	
-	if( ! $('#buildCrud').prop('checked')  ){
+	if( ! $('#buildCrud').prop('checked') == true ){
 		//show the form
 		makeCodeEditor('generatedFORM', "text/html");
 	}else{
@@ -575,6 +575,7 @@ $(function(){
 	var code =  $('#generatedCode');
 	var sql = $('#generatedSQL');
 	var generatedCode, generatedSQL, generatedConn, defaultCSS;
+	
 	
 	
 	$('input[name="mode"]').change(function(event){
@@ -1335,6 +1336,12 @@ $(function(){
 	
 	
 	$('input:radio[name=mode]').filter(":checked").change();
+	
+	
+	
+	$('#downloadEverything').click(function(){
+		$('a.download').click();
+	});
 	
 	
 });
