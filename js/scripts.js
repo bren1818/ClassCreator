@@ -658,8 +658,11 @@ $(function(){
 				buildCreateForm();
 				buildUpdateForm();
 				buildDeleteForm();
-				buildAjaxTable();
+				if( $('#buildAjax').prop('checked') == true  ){
+					buildAjaxTable();
+				}
 				makeSaveString();
+				
 				//$('input[name="mode"][value="form"]').prop("checked", true);
 				buildForm();
 			}else{

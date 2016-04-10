@@ -26,11 +26,24 @@ function buildAdminForm(){
 	code.val( code.val() + tab(3) +	'<thead>\r\n');
 	code.val( code.val() + tab(4) +	'<tr>\r\n');
 	
+	var buildHF = "<th>ID</th>";
+	
 	//iterate through attribute's labels
 	$('#formMode .formSection').each(function(){
 		var label = $(this).find('.item_label input').val();
-		code.val( code.val() + tab(5) +	'<th>' + label + '</th>\r\n');
+		if( $('#buildAjax').prop('checked') == true  ){
+			if( $(this).find('input[name="showAdmin"]').prop('checked') == true ){
+				//code.val( code.val() + tab(5) +	'<th>' + label + '</th>\r\n');	
+				buildHF += '<th>' + label + '</th>';
+			}
+		}else{
+			//code.val( code.val() + tab(5) +	'<th>' + label + '</th>\r\n');
+			buildHF += '<th>' + label + '</th>';
+		}
+		
 	});
+	code.val( code.val() + tab(5) + buildHF + '\r\n');
+	
 	code.val( code.val() + tab(5) +	'<th>Controls</th>\r\n');
 	//end iteration
 	
@@ -41,40 +54,52 @@ function buildAdminForm(){
 	code.val( code.val() + tab(4) +	'<?php\r\n');
 	code.val( code.val() + tab(5) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(5) +	'$conn = getConnection();\r\n');
-	code.val( code.val() + tab(5) +	'$query = "SELECT * FROM `' + frmName + '`";\r\n');
-	code.val( code.val() + tab(5) +	'$result = $conn->prepare($query);\r\n');
-	code.val( code.val() + tab(5) +	'if( $result->execute() ) {\r\n');
-	code.val( code.val() + tab(6) +	'foreach( $result->fetchAll(PDO::FETCH_ASSOC) as $row){\r\n');
-	code.val( code.val() + tab(7) +	'echo "<tr>";\r\n');
-	
-	$('#formMode .formSection').each(function(){
-		var name = $(this).find('.item_variableName input').val();
-		name = name.replace(/\s+/g, ' ');
-		code.val( code.val() + tab(8) +	'echo "<td>".$row["' + name + '"]."</td>";\r\n');
-	});
-	
-	
-	code.val( code.val() + tab(7) +	'?>\r\n');
-	code.val( code.val() + tab(7) +	'<td>\r\n');
-	//custom links
-	code.val( code.val() + tab(9) +	'<a href="modify' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Modify</a> <a href="delete' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Delete</a>\r\n');
-	
-	code.val( code.val() + tab(8) +	'</td>\r\n');
-	code.val( code.val() + tab(7) +	'<?php\r\n');
-	code.val( code.val() + tab(7) +	'echo "</tr>";\r\n');
-	code.val( code.val() + tab(6) +	'}\r\n');
-	code.val( code.val() + tab(5) +	'}\r\n');
-	code.val( code.val() + tab(4) +	'?>\r\n');
+	if( $('#buildAjax').prop('checked') == true  ){
+		//values will auto load
+		code.val( code.val() + tab(7) +	'?>\r\n');
+	}else{
+		code.val( code.val() + tab(5) +	'$query = "SELECT * FROM `' + frmName + '`";\r\n');
+		code.val( code.val() + tab(5) +	'$result = $conn->prepare($query);\r\n');
+		code.val( code.val() + tab(5) +	'if( $result->execute() ) {\r\n');
+		code.val( code.val() + tab(6) +	'foreach( $result->fetchAll(PDO::FETCH_ASSOC) as $row){\r\n');
+		code.val( code.val() + tab(7) +	'echo "<tr>";\r\n');
+		
+		$('#formMode .formSection').each(function(){
+			var name = $(this).find('.item_variableName input').val();
+			name = name.replace(/\s+/g, ' ');
+			code.val( code.val() + tab(8) +	'echo "<td>".$row["' + name + '"]."</td>";\r\n');
+		});
+		
+		
+		code.val( code.val() + tab(7) +	'?>\r\n');
+		code.val( code.val() + tab(7) +	'<td>\r\n');
+		//custom links
+		code.val( code.val() + tab(9) +	'<a href="modify' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Modify</a> <a href="delete' + oName + '.php?' + frmName + 'ID=<?php echo $row["id"]; ?>">Delete</a>\r\n');
+		
+		code.val( code.val() + tab(8) +	'</td>\r\n');
+		code.val( code.val() + tab(7) +	'<?php\r\n');
+		code.val( code.val() + tab(7) +	'echo "</tr>";\r\n');
+		code.val( code.val() + tab(6) +	'}\r\n');
+		code.val( code.val() + tab(5) +	'}\r\n');
+		code.val( code.val() + tab(4) +	'?>\r\n');
+	}
 	//end output data
     code.val( code.val() + tab(3) +	'</tbody>\r\n');
 	code.val( code.val() + tab(3) +	'<tfoot>\r\n');
 	code.val( code.val() + tab(4) +	'<tr>\r\n');
 	
+	/****Apply same code as header!!! ******************/
+	
+	
 	//iterate through attributes's labels
+	/*
 	$('#formMode .formSection').each(function(){
 		var label = $(this).find('.item_label input').val();
 		code.val( code.val() + tab(5) +	'<th>' + label + '</th>\r\n');
 	});
+	*/
+	code.val( code.val() + tab(5) + buildHF + '\r\n');
+	
 	code.val( code.val() + tab(5) +	'<th>Controls</th>\r\n');
 	//end iteration
 	
@@ -755,6 +780,7 @@ function buildAjaxTable(){
 	
 	$data = "";
 	code.val( code.val() + tab(2) +	"foreach( $results as $row){\r\n");
+	    code.val( code.val() + tab(2) +	"$id = $row['id'];\r\n");
 		code.val( code.val() + tab(2) +	"$data[] =  array(\r\n");
 		
 			//$row['id'], '<a target="_blank" href="'.WEB_ROOT.UPLOAD_FOLDER_NAME.$row['path'].'">'.$row['file'].'</a>', ($row['alias'] == "" ? "-" : $row['alias']) , ($row['active']==1?'Yes':'No'), $row['campus'], $row['category'], $row['faculty'], $row['tags'], $row['type'], $row['uploader'], ($row['expiry'] == "0000-00-00 00:00:00" ? "" : substr($row['expiry'],0, 10) ) , '<a href="deleteFile.php?fileID='.$row['id'].'&key='.hash('md5',KEY.$row['path']).'">Delete</a> <a href="modifyFile.php?fileID='.$row['id'].'&key='.hash('md5',KEY.$row['path']).'">Modify</a>'
@@ -768,10 +794,20 @@ function buildAjaxTable(){
 			selcount++;
 		}
 	}	
-		
-	if( selcount > 0){
-		selFields = selFields.substring(0, selFields.length - 2);
-	}	
+	//selFields += "'<a href=\"modify" + oName + ".php?" + frmName + "ID='.$row[\"id\"].'\">Modify</a>'";
+	selFields += '"<a href=\'modify' + oName + '.php?' + frmName + 'ID=$id\'>Modify</a><a href=\'delete' + oName + '.php?' + frmName + 'ID=$id\'>Delete</a>"';
+
+	
+	//if( selcount > 0){
+		//selFields = selFields.substring(0, selFields.length - 2);
+	//}else{
+	//	selFields = selFields.substring(0, selFields.length - 2);
+	//}	
+	
+	
+	
+	//add the modify/delete links
+	
 	
 		code.val( code.val() + tab(3) + selFields + '\r\n');	
 		
