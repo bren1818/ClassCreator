@@ -212,9 +212,12 @@ function addFormRow(){
 		$('#formSection_' + id + ' .tools .up').click(function(event){
 			 $(this).parents('.formSection').insertBefore($(this).parents('.formSection').prev());
 			
+			$('#addFormInput').detach().appendTo( $('#formMode') );
 		});
 		$('#formSection_' + id + ' .tools .down').click(function(event){
 			$(this).parents('.formSection').insertAfter($(this).parents('.formSection').next());
+			
+			$('#addFormInput').detach().appendTo( $('#formMode') );
 		});
 		
 		
@@ -333,6 +336,7 @@ function addFormRow(){
 			}
 		});
 		
+		$('#addFormInput').detach().appendTo( $('#formMode') );
 	
 	});
 }
@@ -420,37 +424,25 @@ var hasGenerated = 0;
 var cmInstances = {}
 	
 function makeCodeEditor(id, EditorMode){
-	
-
-	//var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("" + id + ""));
-	//console.log( myCodeMirror );
-	//var tableName = "";
-	//	if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
-	//		$( generatedCode.getWrapperElement() ).remove();
-	//	}
 	if( hasGenerated != 1 ){
-		console.log("here");
-	//var generatedForm;
-	//generatedForm = 
-	cmInstances['_' + id] = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
-		lineNumbers: true,
-		mode: EditorMode, //"text/html", 
-		indentUnit: 4,
-		indentWithTabs: true,
-		matchBrackets: true,
-		extraKeys: { 
-			"F11": function(cm) {
-			  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-			},
-			"Esc": function(cm) {
-			  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-			},
-			"Ctrl-Space": "autocomplete"
-		}
-	});
+		cmInstances['_' + id] = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
+			lineNumbers: true,
+			mode: EditorMode, //"text/html", 
+			indentUnit: 4,
+			indentWithTabs: true,
+			matchBrackets: true,
+			extraKeys: { 
+				"F11": function(cm) {
+				  cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+				},
+				"Esc": function(cm) {
+				  if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+				},
+				"Ctrl-Space": "autocomplete"
+			}
+		});
 	}else{
 		cmInstances['_' + id].setValue( $("#" + id).val() );
-		//console.log( cmInstances['_' + id] );
 		$('#' + id).hide();
 	}
 }
@@ -483,8 +475,6 @@ function buildForm(){
 	code.val( code.val() + tab(2) + '<input class="button" type="submit" value="SUBMIT" />' );
 	code.val( code.val() + tab(1) + '</div>');
 	code.val( code.val() + tab(0) + '</form>' );
-	
-	//$('#preview').html( code.val() );
 	
 	if( ! $('#buildCrud').prop('checked') == true ){
 		//show the form
@@ -612,7 +602,7 @@ $(function(){
 	
 	$('#buildCrud').click(function(e){
 		if( $(this).prop("checked") ){
-			$('#crudInterfaces').show();
+			//$('#crudInterfaces').show();
 			$('#buildAjaxControls').show();
 			$('body').removeClass('showAjaxControls');
 		}else{
@@ -801,8 +791,6 @@ $(function(){
 		}
 		
 		code.val( code.val() + '\r\n\t\t/*Special Functions*/');
-		
-		
 		
 		//load function
 		code.val( code.val() + '\r\n\t\tfunction load($id = null){');
@@ -1225,6 +1213,13 @@ $(function(){
 		makeCodeEditor('generatedSQL', "text/javascript");
 		
 		
+		if( $('#buildCrud').prop("checked") == true ){
+			$('#crudInterfaces').show();
+			
+		}else{
+			$('#crudInterfaces').hide();
+		}
+		$('a.download').show();
 	});
 	
 	
@@ -1303,18 +1298,9 @@ $(function(){
 						$('#' + lastRow ).find('input[name="showAdmin"]').prop("checked", keys[k].showAdmin);
 						$('#' + lastRow ).find('input[name="useQuery"]').prop("checked", keys[k].useQuery);
 						
-							
-					
-						
-						
 					}
 					
-					//console.log( keys );
-					
 					/*
-					
-					
-					
 					{"mode":"form","keys":"%5B%7B%22name%22:%22name%22,%22label%22:%22Name:%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22Name%20is%20a%20required%20field%22%7D,%7B%22name%22:%22age%22,%22label%22:%22Age:%22,%22type%22:%22number%22,%22required%22:true,%22errText%22:%22%22%7D,%7B%22name%22:%22email%22,%22label%22:%22Email:%22,%22type%22:%22email%22,%22required%22:true,%22errText%22:%22email%20required%22%7D%5D","classname":"User","listBy":true,"getBy":true,"defaultSize":"45"}
 					*/
 				
@@ -1341,15 +1327,7 @@ $(function(){
 	makeCodeEditor("defaultCSS", "text/css");
 	makeCodeEditor("generatedConn", "text/x-php");
 	
-	
-	//if( $('#buildAjax').prop("checked") ){
-	//	buildAjaxTable();
-	//}
-	
-	
 	$('input:radio[name=mode]').filter(":checked").change();
-	
-	
 	
 	$('#downloadEverything').click(function(){
 		$('a.download').click();

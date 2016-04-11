@@ -4,6 +4,7 @@ html,body{
 	margin: 0px;
 	padding: 0px;
 	height: 100%;
+	font-family: arial;
 }
 
 body{
@@ -279,4 +280,26 @@ html>body .pageContentSection.Expand {
 		.showAjaxControls .ajaxCode{ display: block; }
 		
 		.formSection .formRow > .ajaxControls{ width: 100%; clear: both;}
+		
+		
+		a.download{
+			display: inline-block;
+ -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.1s;
+padding: 3px 5px;
+text-align: center;
+border: 2px solid #008CBA;	
+margin: 5px 0;
+border-radius: 4px;
+display: none;
+		}
+		
+		a.download:hover{
+			background-color: #008CBA;
+			cursor: pointer;
+			font-weight: bold;
+		}
+		
+		
+		
 		

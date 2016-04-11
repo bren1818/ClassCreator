@@ -74,11 +74,11 @@
 						
 					
 						
-						
+						<button id="addFormInput" style="display: none;" onClick="addFormRow()">Add Form Section</button>
 					</div>
 					<div class="clear"></div>
-					<br /><br />
-					<button id="addFormInput" style="display: none;" onClick="addFormRow()">Add Form Section</button>
+					
+					
 					<br />
 					<input type="checkbox" name="includeListby" value="1" checked/> Include List by Function<br />
 					<input type="checkbox" name="includeGetby" value="1" checked/> Include Get by Function (limit 1)<br />
@@ -90,8 +90,6 @@
 					
 					<div id="buildAjaxControls" style="display: none;"><input type="checkbox" name="buildAjax" value="1" id="buildAjax" /> Build Ajax Table interfaces and show toggles</div><br />
 					
-					
-					<br /><br />
 					<button id="generate">Generate Code</button>
 					<br /><br />
 				</div>
