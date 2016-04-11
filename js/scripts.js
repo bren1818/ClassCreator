@@ -415,6 +415,9 @@ function addFormRow(){
 **********************************
 
 **/	
+
+var hasGenerated = 0;
+var cmInstances = {}
 	
 function makeCodeEditor(id, EditorMode){
 	
@@ -425,9 +428,11 @@ function makeCodeEditor(id, EditorMode){
 	//	if( typeof generatedCode != "undefined" && $( generatedCode.getWrapperElement() ).length ){
 	//		$( generatedCode.getWrapperElement() ).remove();
 	//	}
-	
-	var generatedForm;
-	generatedForm = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
+	if( hasGenerated != 1 ){
+		console.log("here");
+	//var generatedForm;
+	//generatedForm = 
+	cmInstances['_' + id] = CodeMirror.fromTextArea(document.getElementById("" + id + ""), {
 		lineNumbers: true,
 		mode: EditorMode, //"text/html", 
 		indentUnit: 4,
@@ -443,13 +448,17 @@ function makeCodeEditor(id, EditorMode){
 			"Ctrl-Space": "autocomplete"
 		}
 	});
+	}else{
+		cmInstances['_' + id].setValue( $("#" + id).val() );
+		//console.log( cmInstances['_' + id] );
+		$('#' + id).hide();
+	}
 }
 
 	
 function buildForm(){
 	var code = $('#generatedFORM');
 	var variables = $('#variables');
-	
 	
 	var frmName = $('#className').val().toLowerCase().trim();
 	
@@ -496,6 +505,9 @@ function buildForm(){
 	
 $('input[name="mode"][value="form"]').prop("checked", true);
 	
+	if( hasGenerated == 0){
+		hasGenerated = 1; // flag
+	}
 }
 
 /**
