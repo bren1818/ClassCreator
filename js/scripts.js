@@ -563,10 +563,10 @@ function adminPageDownload(type){
 		}else if(type=="Ajax"){
 			var name = 'ajaxTable' + className + '.php';
 			saveTextAsFile('GenAjaxCode', name);
+		}else if(type == "Export"){
+			var name = 'export' + className + '.php';
+			saveTextAsFile('ExportCode', name);
 		}
-		
-		
-
 }
 
 
@@ -661,6 +661,8 @@ $(function(){
 				buildCreateForm();
 				buildUpdateForm();
 				buildDeleteForm();
+				buildCSVTable();
+				
 				if( $('#buildAjax').prop('checked') == true  ){
 					buildAjaxTable();
 				}

@@ -130,6 +130,12 @@
 							<textarea id="GenAjaxCode" style="width: 100%; min-height: 50px; display:none;"></textarea>
 							<a class="download" onClick="adminPageDownload('Ajax')">Download Ajax Page</a>
 						</div>
+						
+						<h2>Export Code</h2>
+						<textarea id="ExportCode" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<a class="download" onClick="adminPageDownload('Export')">Download Export (CSV) Page</a>
+						
+						
 					</div>
 					
 					<h2>Default CSS</h2>					
