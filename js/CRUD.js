@@ -108,6 +108,9 @@ function buildAdminForm(){
 	code.val( code.val() + tab(2) +	'</table>\r\n');				
 	code.val( code.val() + '</fieldset>\r\n');
 	
+	code.val( code.val() + '<a href="export' + oName + '.php">Download Data in CSV Format</a>\r\n');
+	
+	
 	//javascript enabling
 	code.val( code.val() + '<script type="text/javascript">\r\n');
 	code.val( code.val() + tab(2) +	'$(function(){\r\n');
