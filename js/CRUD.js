@@ -886,11 +886,13 @@ function buildCSVTable(){
 	code.val( code.val() + tab(3) +	'header("Expires: 0");');
 	code.val( code.val() + tab(3) +	'$results = $query->fetchAll(PDO::FETCH_ASSOC);	');
 	//echo each 'label with ,'
+	var optionsHTML = "";
 	$('#formMode .formSection').each(function(){
 		var label = $(this).find('.item_label input').val();
 		var variable = $(this).find('.item_variableName input').val();
 		variable = variable.replace(/\s+/g, ' ');
 		code.val( code.val() + tab(2) +	'echo (( isset($_POST["' + variable + '"]) && $_POST["' + variable + '"] == 1 ) ? "' + label + ', " : "");');	
+		optionsHTML += '<option  value="' +  variable + '">' + label + '</option>';
 	});
 	code.val( code.val() + tab(3) +	'echo PHP_EOL;');
 	code.val( code.val() + tab(3) +	'foreach($results as $r){');
@@ -907,6 +909,32 @@ function buildCSVTable(){
 	code.val(  code.val() + tab(0) + '?>');
 	
 	code.val(  code.val() + tab(0) + '<div class="toggles">');
+	
+	code.val(  code.val() + tab(1) + '<script>');
+	/////
+	code.val(  code.val() + tab(2) + 'var opts = \'' + optionsHTML + '\';'); 
+	code.val(  code.val() + tab(2) + 'var controls = \'<div class="remove">X</div>\';');
+		
+	code.val(  code.val() + tab(2) + '$(function(){');
+	code.val(  code.val() + tab(3) + 'function bind(){');
+	//bind events
+	code.val(  code.val() + tab(4) + '$(".remove").click(function(){ $(this).parent().remove(); }); ');
+	code.val(  code.val() + tab(3) + '}');
+			
+	code.val(  code.val() + tab(3) + "$('#addClause').click(function(){");
+	
+	code.val(  code.val() + tab(4) + '		$(\'#clauses\').append(\'<div class="clause">WHERE <select name="where[]">\' + opts + \'</select> <select name="operator[]"><option value="LIKE">LIKE</option><option value="EQUAL">EQUALS</option></select> <input name="filterString[]" /><div class="controls">\' + controls + \'</div></div>\');');
+			
+	code.val(  code.val() + tab(4) + 'bind();');
+	code.val(  code.val() + tab(3) + '});');
+	
+	code.val(  code.val() + tab(3) + '$(\'input[name="addWhere"]\').change(function(){ if($(this).val() == "Yes"){ $("whereClaue").show(); }else{ $("whereClause").hide(); } }); ');
+	
+	
+	code.val(  code.val() + tab(2) + '});');
+	code.val(  code.val() + tab(1) + '</script>');
+	
+	
 	code.val(  code.val() + tab(1) + '<form class="toggles" method="POST" action="export' + oName +'.php">');
 	
 	
@@ -920,6 +948,20 @@ function buildCSVTable(){
 		code.val(  code.val() + tab(2) + '<input type="checkbox" name="' + variable + '" value="1" <?php echo ( isset($_POST["' + variable + '"]) && $_POST["' + variable + '"] == 1 ) ? "checked" : ""; ?>/>: ' + label + '<br />');
 	});	
 	//toggles
+	code.val(  code.val() + tab(2) + '<p>Configure where clause? <input type="radio" name="addWhere" value="Yes" />Yes <input name="where" value="No" /> No </p>');
+	code.val(  code.val() + tab(2) + '<fieldset id="whereClause" style="display: none;">');
+	code.val(  code.val() + tab(3) + '<legend>Filter Data - Where</legend>');
+	
+	
+	code.val(  code.val() + tab(3) + '<div id="clauses"></div>');
+	
+	code.val(  code.val() + tab(3) + '<button id="addClause">Add Clause</button>');
+	
+	
+	code.val(  code.val() + tab(2) + '</fieldset>');
+	
+	
+	
 	
 	
 	code.val(  code.val() + tab(2) + '<p><input type="submit" value="GENERATE CSV"/></p>');
