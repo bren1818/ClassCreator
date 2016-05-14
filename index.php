@@ -40,13 +40,13 @@
 					<button id="loadConfig">Load Config</button>
 					
 					<p>Type in the variables you'll want your class to have. id, errors and connection will automatically be added</p>
-					<input type="text" name="className" id="className" placeholder="Class Name" value="" pattern=".{5,}" title="This needs to be filled in, min of 5 characters" required="required"/><br />
+					<input type="text" name="className" id="className" placeholder="ClassName" style="text-transform: Capitalize;" value="" pattern=".{1,}" title="This needs to be filled in, min of 5 characters" required="required"/><br />
 					
 					
 					<br />
 					<input type="radio" name="mode" value="simple" />Simple Mode<br />
-					<input type="radio" name="mode" value="advanced" checked/>Advanced Mode<br />
-					<input type="radio" name="mode" value="form" />Form Mode (incomplete)
+					<input type="radio" name="mode" value="advanced" />Advanced Mode<br />
+					<input type="radio" name="mode" value="form" checked/>Form Mode (incomplete)
 					
 					
 					<div id="advancedMode" style="display:none; line-height: 1em;">
@@ -87,13 +87,13 @@
 					Default varchar: <input type="number" name="defaultVarcharLength" id="defaultVarcharLength" min=1" value="45" />
 					<br /><br />
 					<input type="checkbox" name="buildCrud" value="1" id="buildCrud" /> Build CRUD interfaces<br />
-					
+					<input type="checkbox" name="headerfooter" value="1" id="headerfooter" checked/>Include Header & Footer in templates<br />
 					<div id="buildAjaxControls" style="display: none;"><input type="checkbox" name="buildAjax" value="1" id="buildAjax" /> Build Ajax Table interfaces and show toggles</div><br />
 					
 					<button id="generate">Generate Code</button>
 					<br /><br />
 				</div>
-				<button id="downloadEverything">Download Everything!</button>
+				<button id="downloadEverything" style="display:none;">Download Everything!</button>
 				<div class="col">
 					<h2>Generated Class</h2>
 					<p>Select editor and press F11 for full screen</p>
@@ -143,38 +143,17 @@
 					
 					
 					<h2>Default DB Driver for connection (passed into object)</h2>
-					<textarea id="generatedConn">
-					&lt;?php
-					//some instances may bark if date isn't set
-					date_default_timezone_set("America/New_York");
-
-					function getConnection() {
-						
-						$dbName = "localDB"; 			//Database Name
-						$dbUser = "localUser"; 			//Database User
-						$dbPass = "awesomePassword"; 	//Database Password
-						$dbHost = "localhost";
-						
-						$dbc = null;
-						try {
-							$dbc = new PDO('mysql:host='.$dbHost.';dbname='.$dbName, $dbUser, $dbPass);
-							$dbc->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-						}
-						catch(PDOException $e) {
-							echo "<h2>An error has occurred connecting to the database</h2>";
-							echo "<p>".$e->getMessage()."</p>";
-							file_put_contents('PDOErrorsLog.txt', $e->getMessage(), FILE_APPEND);
-						}
-						return $dbc;
-					}
-
-					/* Example usage
-					$conn = getConnection();
-					$someClass = new someClass($conn);
-					$someClass = $someClass->load( $someID );
-					*/
-					?&gt;
+					<textarea id="generatedConn" style="width: 100%; min-height: 50px; display:none;">
 					</textarea>
+					
+					<p style="color: #5a5;">
+					/* Example usage<br />
+					$conn = getConnection();<br />
+					$someClass = new someClass($conn);<br />
+					$someClass = $someClass->load( $someID );<br />
+					*/
+					</p>
+					
 					<a class="download" onClick="adminPageDownload('Include')">Download Include File</a>
 					
 					<h2>Config String</h2>

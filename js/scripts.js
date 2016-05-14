@@ -83,8 +83,8 @@ function addFormRow(){
 				'<div class="tools"><button class="up"> &uarr; </botton><button class="down"> &darr; </button> <button class="delete">X</button></div>' +
 				
 				'<div class="ajaxControls">' +
-					'<p><input type="checkbox" name="showAdmin" value="1" />: Show in Admin Interface? ' +
-					'<input type="checkbox" name="useQuery" value="1" />: Use for search Querying </p>' +	
+					'<p><input type="checkbox" name="showAdmin" value="1" checked/>: Show in Admin Interface? ' +
+					'<input type="checkbox" name="useQuery" value="1" checked/>: Use for search Querying </p>' +	
 				'</div>' +
 
 				
@@ -109,7 +109,7 @@ function addFormRow(){
 				'</div>' + 
 				
 				'<div class="item_label">' + 
-					'<label>Label: <input type="text" name="label" value="" style="text-transform: lowercase;" required="required"/></label>' +
+					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
 				'</div>' + 
 				
 				'<div class="item_variableName">' + 
@@ -407,6 +407,7 @@ function addFormRow(){
 			'listBy' : $('input[name="includeListby"]').prop("checked"),
 			'getBy' : $('input[name="includeGetby"]').prop("checked"),
 			'buildCRUD' : $('input[name="name="buildCrud"]').prop("checked"),
+			'headerfooter' : $('input[name="name="headerfooter"]').prop("checked"),
 			'buildAjax' : $('input[name="name="buildAjax"]').prop("checked"),
 			'defaultSize' : $('#defaultVarcharLength').val()
 		}
@@ -498,6 +499,9 @@ $('input[name="mode"][value="form"]').prop("checked", true);
 	if( hasGenerated == 0){
 		hasGenerated = 1; // flag
 	}
+	
+	
+$('#downloadEverything').show();	
 }
 
 /**
@@ -636,6 +640,11 @@ $(function(){
 			$( generatedSQL.getWrapperElement() ).remove();
 		}
 		
+		if( typeof generatedConn != "undefined" && $( generatedConn.getWrapperElement() ).length ){
+			$( generatedConn.getWrapperElement() ).remove();
+		}
+		
+		
 		//console.log( generatedCode );
 		//console.log( generatedSQL );
 		
@@ -662,7 +671,7 @@ $(function(){
 				buildUpdateForm();
 				buildDeleteForm();
 				buildCSVTable();
-				
+				buildInclude();
 				if( $('#buildAjax').prop('checked') == true  ){
 					buildAjaxTable();
 				}
@@ -673,6 +682,7 @@ $(function(){
 			}else{
 				$('#genFormTitle').show();
 				buildForm();
+				buildInclude();
 			}
 			
 			return;
@@ -1213,7 +1223,7 @@ $(function(){
 		
 		makeCodeEditor('generatedCode', "text/x-php");
 		makeCodeEditor('generatedSQL', "text/javascript");
-		
+		makeCodeEditor("generatedConn", "text/x-php");
 		
 		if( $('#buildCrud').prop("checked") == true ){
 			$('#crudInterfaces').show();
@@ -1302,15 +1312,17 @@ $(function(){
 						
 					}
 					
-					/*
-					{"mode":"form","keys":"%5B%7B%22name%22:%22name%22,%22label%22:%22Name:%22,%22type%22:%22text%22,%22required%22:true,%22errText%22:%22Name%20is%20a%20required%20field%22%7D,%7B%22name%22:%22age%22,%22label%22:%22Age:%22,%22type%22:%22number%22,%22required%22:true,%22errText%22:%22%22%7D,%7B%22name%22:%22email%22,%22label%22:%22Email:%22,%22type%22:%22email%22,%22required%22:true,%22errText%22:%22email%20required%22%7D%5D","classname":"User","listBy":true,"getBy":true,"defaultSize":"45"}
-					*/
+					
 				
 				}
 				
 				$('#defaultVarcharLength').val(  o.defaultSize );
 				$('input[name="includeListby"]').prop("checked", o.listBy);
+				//$('input[name="buildCrud"]').prop("checked", o.buildCrud);
 				$('input[name="includeGetby"]').prop("checked", o.getBy);
+				
+				$('input[name="headerfooter"]').prop("checked", o.headerfooter);
+				
 				if( o.buildCRUD ){
 					$('input[name="buildCrud"]').click();
 					if( o.buildAjax ){
@@ -1327,7 +1339,14 @@ $(function(){
 	$('textarea').autosize();   
 
 	makeCodeEditor("defaultCSS", "text/css");
-	makeCodeEditor("generatedConn", "text/x-php");
+	//buildInclude();
+	
+	//if( typeof generatedConn != "undefined" && $( generatedConn.getWrapperElement() ).length ){
+	//		$( generatedConn.getWrapperElement() ).remove();
+	//		
+	//}
+	
+	//makeCodeEditor("generatedConn", "text/x-php");
 	
 	$('input:radio[name=mode]').filter(":checked").change();
 	
