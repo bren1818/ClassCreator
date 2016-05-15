@@ -1,3 +1,8 @@
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
+
 function buildInclude(){
 	var code = $('#generatedConn');
 	code.show();
@@ -33,16 +38,29 @@ function buildInclude(){
 		code.val( code.val() + tab(1) + 'function getHeader() {\r\n');
 		code.val( code.val() + tab(2) + '/*Stub Header Function*/\r\n');
 		
-		/*
-			code.val( code.val() + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>\r\n');
-		code.val( code.val() + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
-		code.val( code.val() + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');
-		*/
+	
+		code.val( code.val() + tab(2) + '?>\r\n');
+		code.val( code.val() + tab(2) + '<html>\r\n');
+		code.val( code.val() + tab(3) + '<head>\r\n');
+		code.val( code.val() + tab(4) + '<title></title>\r\n');
+		code.val( code.val() + tab(4) + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
+		code.val( code.val() + tab(4) + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');	
+		code.val( code.val() + tab(3) + '</head>\r\n');
+		code.val( code.val() + tab(3) + '<body>\r\n');
+		code.val( code.val() + tab(2) + '<?php\r\n');
+		
 		
 		code.val( code.val() + tab(1) + '}\r\n');
 		code.val( code.val() + '\r\n');
 		code.val( code.val() + tab(1) + 'function getFooter() {\r\n');
 		code.val( code.val() + tab(2) + '/*Stub Footer Function*/\r\n');
+	
+		code.val( code.val() + tab(2) + '?>\r\n');
+		code.val( code.val() + tab(3) + '</body>\r\n');
+		code.val( code.val() + tab(2) + '</html>\r\n');
+		code.val( code.val() + tab(2) + '<?php\r\n');
+	
 		code.val( code.val() + tab(1) + '}\r\n');
 	}
 
@@ -50,8 +68,6 @@ function buildInclude(){
 
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '?>');
-	
-	//makeCodeEditor("generatedConn", "text/x-php");
 }
 
 function buildAdminForm(){
@@ -498,7 +514,6 @@ function getFormInnards(code, frmName){
 }	
 
 
-
 function buildCreateForm(){
 	var code = $('#CreatePage');
 	
@@ -509,8 +524,35 @@ function buildCreateForm(){
 	code.val( '<?php\r\n');
 	code.val( code.val() + tab(1) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(1) +	'include "' + oName + '.php";\r\n');
-		//check if any instances of list and see if any unique classes need to be added !!!!!!!!!!!!!!!
-		
+	
+	//check if any instances of list and see if any unique classes need to be added !!!!!!!!!!!!!!!
+	
+	var potentialIncludes =[];
+	$('#formMode .formSection').each(function(){
+		//select, selectMultiple, RadioButton Group, CheckBoxGroup
+		var s = $(this).find('.item_type select[name="item"] option:selected').val(); 
+		//console.log( s );
+		if( s == "select" || s == "selectMultiple" || s == "radioGroup" || s == "checkGroup" ){
+			var t = $(this).find('.type_list input[type="radio"]:checked').val(); 
+			//console.log( t );
+			if( t == "object"){
+				var o = $(this).find('.type_list input[name="objectName"]').val(); 
+				//console.log( o );
+				if( o != ""){
+					potentialIncludes.push(o);
+				}
+				
+			}
+		}
+	});
+	if( potentialIncludes.length > 0){
+		var unique = potentialIncludes.filter( onlyUnique );
+		for(var i =0; i < unique.length; i++){
+			code.val( code.val() + tab(1) +	'include "' + unique[i] + '.php";\r\n');
+		}
+	}
+	
+	
 	if( $('#headerfooter').prop('checked') == true ){
 		code.val( code.val() + tab(1) + 'getHeader();\r\n');
 	}	
@@ -596,6 +638,32 @@ function buildUpdateForm(){
 	code.val(  '<?php\r\n');
 	code.val( code.val() + tab(1) +	'include "include.php";\r\n');
 	code.val( code.val() + tab(1) +	'include "' + oName + '.php";\r\n');
+	
+	
+	var potentialIncludes =[];
+	$('#formMode .formSection').each(function(){
+		//select, selectMultiple, RadioButton Group, CheckBoxGroup
+		var s = $(this).find('.item_type select[name="item"] option:selected').val(); 
+		//console.log( s );
+		if( s == "select" || s == "selectMultiple" || s == "radioGroup" || s == "checkGroup" ){
+			var t = $(this).find('.type_list input[type="radio"]:checked').val(); 
+			//console.log( t );
+			if( t == "object"){
+				var o = $(this).find('.type_list input[name="objectName"]').val(); 
+				//console.log( o );
+				if( o != ""){
+					potentialIncludes.push(o);
+				}
+				
+			}
+		}
+	});
+	if( potentialIncludes.length > 0){
+		var unique = potentialIncludes.filter( onlyUnique );
+		for(var i =0; i < unique.length; i++){
+			code.val( code.val() + tab(1) +	'include "' + unique[i] + '.php";\r\n');
+		}
+	}
 	
 	if( $('#headerfooter').prop('checked') == true ){
 		code.val( code.val() + tab(1) + 'getHeader();\r\n');
