@@ -840,6 +840,13 @@ function buildAjaxTable(){
 	var frmName = $('#className').val().toLowerCase().trim();
 	var oName = frmName.capitalize();
 	
+	var linksClasses = 0;
+	
+	if( $('.formRow .type_list input[value="object"]:checked').length > 0 ){
+		linksClasses = 1;
+		console.log("Classes Linked");
+	}
+	
 	code.show();
 	code.val('<?php\r\n');
 	code.val( code.val() + '/*\r\n');
@@ -911,20 +918,65 @@ function buildAjaxTable(){
 	/* Query Logic */
 	//useQuery && showAdmin
 	
-	code.val( code.val() + tab(2) +	'$query = "SELECT `id`,\r\n'); //' + frmName + '.
+	if( linksClasses ){
+		code.val( code.val() + tab(2) +	'$query = "SELECT prTable.`id`,\r\n'); 
+	}else{
+		code.val( code.val() + tab(2) +	'$query = "SELECT `id`,\r\n'); 
+	}
+	var linkedTables = new Array(); //added Sept 5
+	
 	var selcount = 0;
 	var selFields = "";
 	for(var obc = 0; obc < variables.length; obc++){
 		if( variables[obc].showAdmin == true ){
 			selcount++;
-			selFields += '`' + variables[obc].name + '`,'; //frmName + '. 
+			if( linksClasses ){
+				//need to check if variable is from other class..
+				if( variables[obc].listType == "object" ){
+					selFields += ' ' + variables[obc].listObjectName + '.`' + variables[obc].listObjectTitleFunction + '` as `' +  variables[obc].name + '`,';
+					//push array obj
+					var to = {object: variables[obc].listObjectName, key: variables[obc].listObjectKeyFunction, map: variables[obc].name };
+					linkedTables.push( to );
+					
+				}else{
+					selFields += 'prTable.`' + variables[obc].name + '`,'; 
+				}
+				
+			}else{
+				selFields += '`' + variables[obc].name + '`,'; 
+			}
+			
 		}
 	}
 	if( selcount > 0 ){
 		code.val( code.val() + tab(3) + selFields.substring(0, selFields.length - 1) +   '\r\n');
 	}
 	code.val( code.val() + tab(2) + 'FROM\r\n');
-	code.val( code.val() + tab(3) + '`' + frmName + '`\r\n');
+	
+	
+	if( linksClasses ){
+		code.val( code.val() + tab(3) + '`' + frmName + '` prTable \r\n');	
+		
+		//join other classes...
+		if( linkedTables.length > 0){
+			code.val( code.val() + '\r\n');
+		}
+		
+		for(var tos = 0; tos < linkedTables.length; tos++){
+			console.log( linkedTables[tos] );
+			
+			code.val( code.val() + tab(3) + 'left join `'  + linkedTables[tos].object  + '` on `' + linkedTables[tos].object + '`.`' + linkedTables[tos].key + '` = `prTable`.`' + linkedTables[tos].map + '` \r\n');	
+			
+		}
+		
+		
+		
+	}else{
+		code.val( code.val() + tab(3) + '`' + frmName + '`\r\n');
+	}
+	
+	
+	
 	code.val( code.val() + tab(2) + 'WHERE\r\n');
 	//queryable?
 	
