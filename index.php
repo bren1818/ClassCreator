@@ -40,7 +40,7 @@
 					<button id="loadConfig">Load Config</button>
 					
 					<p>Type in the variables you'll want your class to have. id, errors and connection will automatically be added</p>
-					<input type="text" name="className" id="className" placeholder="ClassName" style="text-transform: Capitalize;" value="" pattern=".{1,}" title="This needs to be filled in, min of 5 characters" required="required"/><br />
+					<input type="text" name="className" id="className" placeholder="ClassName" style="text-transform: Capitalize;" value="" pattern="^[a-zA-Z0-9\S]{1,}$" title="This needs to be filled in, min of 5 characters" required="required"/><br />
 					
 					
 					<br />

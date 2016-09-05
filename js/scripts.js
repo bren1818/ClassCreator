@@ -76,7 +76,7 @@ function getType(type){
 
 
 function addFormRow(){
-	$(function(){
+	//$(function(){
 		var id = new Date().getTime();
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
 			'<div class="formRow">' + 
@@ -87,11 +87,10 @@ function addFormRow(){
 					'<input type="checkbox" name="useQuery" value="1" checked/>: Use for search Querying </p>' +	
 				'</div>' +
 
-				
+				//Type
 				'<div class="item_type">' + 
-					//<option value="telephone">telephone</option><option value="File">File</option><option value="code">code</option><option value="RepeatSection">Repeatable Section</option>
-					'<label>Type: ' +
-					'<select name="item">' +
+					'<label for="type_' + id + '">Type:</label>' +
+					'<select id="type_' + id + '" name="item">' +
 						'<option value="text">text</option>' +
 						'<option value="number">number</option>' +
 						'<option value="email">email</option>' +
@@ -105,27 +104,30 @@ function addFormRow(){
 						'<option value="radioGroup">Radio Button Group</option>' +
 						'<option value="checkGroup">Checkbox Group</option>' +
 					'</select>' +
-					'</label>' + 
 				'</div>' + 
 				
+				//Label
 				'<div class="item_label">' + 
-					'<label>Label: <input type="text" name="label" value="" required="required"/></label>' +
+					'<label for="label_' + id + '">Label:</label><input id="label_' + id + '" type="text" name="label" value="" required="required"/>' +
 				'</div>' + 
 				
+				//Variable Name
 				'<div class="item_variableName">' + 
-					'<label>Variable name: <input type="text" name="label" value="" pattern="[a-zA-Z0-9_]+" required="required" title="Variable name, no spaces"/></label>' +
+					'<label for="variable_' + id + '">Variable name:</label><input id="variable_' + id + '" type="text" name="variable" value="" pattern="^[a-zA-Z0-9\S]{1,}$" required="required" title="Variable name, no spaces"/>' +
 				'</div>' +
 				
+				//Required
 				'<div class="item_required">' + 				
-					'<label>Required: <input type="checkbox" name="item_required"/></label>' + 
+					'<label for="required_' + id + '">Required:</label><input id="required_' + id + '" type="checkbox" name="item_required"/>' + 
 				'</div>' + 
 				
+				//Error Text
 				'<div class="item_error" style="display: none">' + 
-					'<label>Error Text: <input type="text" value="" /></label>' +
+					'<label for="error_' + id + '">Error Text:</label><input id="error' + id + '" type="text" value="" />' +
 				'</div>' + 
 				
 				'<div class="item_placeholder">' + 
-					'<label>Placeholder: <input type="text" name="placeholder" placeholder="placeholder Text" value="" /></label>' +
+					'<label for="placeholder_' + id + '">Placeholder:</label><input id="placeholder_' + id + '" type="text" name="placeholder" placeholder="placeholder Text" value="" />' +
 				'</div>' + 
 				
 				
@@ -205,6 +207,7 @@ function addFormRow(){
 			'</div>' + 
 			
 		'</div>';
+		
 		$('#formMode').append(html);
 		$('#formSection_' + id + ' .tools .delete').click(function(event){
 			$(this).closest('.formSection').remove();
@@ -338,7 +341,7 @@ function addFormRow(){
 		
 		$('#addFormInput').detach().appendTo( $('#formMode') );
 	
-	});
+//	});
 }
 
 	function getFormVals(mode){
@@ -1203,7 +1206,7 @@ $(function(){
 		vars.remByVal("errors");
 		vars.remByVal("errorCount");
 		
-		if( vars.length > 1 ){ sql.val( sql.val() + ','); }
+		if( vars.length > 0 ){ sql.val( sql.val() + ','); }
 		if( mode == "simple" ){
 			var vl = $('input[name="defaultVarcharLength"]').val();
 			for(var v=0; v < vars.length; v++){

@@ -43,9 +43,9 @@ function buildInclude(){
 		code.val( code.val() + tab(2) + '<html>\r\n');
 		code.val( code.val() + tab(3) + '<head>\r\n');
 		code.val( code.val() + tab(4) + '<title></title>\r\n');
-		code.val( code.val() + tab(4) + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>\r\n');
-		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
-		code.val( code.val() + tab(4) + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');	
+		code.val( code.val() + tab(4) + '<script   src="//code.jquery.com/jquery-1.12.3.js"   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />\r\n');
+		code.val( code.val() + tab(4) + '<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>\r\n');	
 		code.val( code.val() + tab(3) + '</head>\r\n');
 		code.val( code.val() + tab(3) + '<body>\r\n');
 		code.val( code.val() + tab(2) + '<?php\r\n');
@@ -96,9 +96,9 @@ function buildAdminForm(){
 	
 	if( !$('#headerfooter').prop('checked') ){
 		code.val( code.val() + '<!--Recommended include -->\r\n');
-		code.val( code.val() + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>\r\n');
-		code.val( code.val() + '<link rel="stylesheet" href="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />\r\n');
-		code.val( code.val() + '<script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>\r\n');
+		code.val( code.val() + '<script   src="//code.jquery.com/jquery-1.12.3.js"   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + '<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />\r\n');
+		code.val( code.val() + '<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>\r\n');
 	}
 	
 	code.val( code.val() + '\r\n');
@@ -864,9 +864,10 @@ function buildAjaxTable(){
 		code.val( code.val() + tab(3) +	'$search = "%".$search."%";\r\n');
 	code.val( code.val() + tab(2) +	'}\r\n');
 
-	code.val( code.val() + tab(2) +	'if( $start < 0 || !is_int($start) ){\r\n');
-		code.val( code.val() + tab(3) +	'$start = 0;\r\n');
-	code.val( code.val() + tab(2) +	'}\r\n');
+	//code.val( code.val() + tab(2) +	'if( $start < 0 || !is_int($start) ){\r\n');
+	//	code.val( code.val() + tab(3) +	'$start = 0;\r\n');
+		code.val( code.val() + tab(3) +	'$start = (int)$start;\r\n');
+	//code.val( code.val() + tab(2) +	'}\r\n');
 		
 	code.val( code.val() + tab(2) +	'$conn = getConnection();\r\n');
 	
@@ -1013,7 +1014,8 @@ function buildAjaxTable(){
 	
 	code.val( code.val() + tab(2) +	"$recordsFiltered =  sizeof( $data ) ;\r\n");
 	code.val( code.val() + tab(2) +	"ob_clean();\r\n");
-	code.val( code.val() + tab(2) +	'echo json_encode( array( "draw" => (int)($draw), "recordsTotal" => $recordsTotal, "recordsFiltered" => $recordsFiltered, "data" => $data, "error" => "") ); \r\n');
+	//code.val( code.val() + tab(2) +	'echo json_encode( array( "draw" => (int)($draw), "recordsTotal" => $recordsTotal, "recordsFiltered" => $recordsFiltered, "data" => $data, "error" => "") ); \r\n');
+	code.val( code.val() + tab(2) +	'echo json_encode( array( "draw" => (int)($draw), "recordsTotal" => $recordsTotal, "recordsFiltered" => $recordsTotal, "data" => $data, "error" => "") ); \r\n');
 	code.val( code.val() + tab(2) +	"exit;\r\n");
 	code.val(code.val() + '?>');
 	
@@ -1130,7 +1132,7 @@ function buildCSVTable(){
 	code.val(  code.val() + tab(0) + '</style>');	
 	
 	code.val(  code.val() + tab(0) + '<div class="toggles">');
-	code.val(  code.val() + tab(1) + '<script src="https://code.jquery.com/jquery-2.2.2.min.js"   integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI="   crossorigin="anonymous"></script>');
+	code.val(  code.val() + tab(1) + '<script   src="//code.jquery.com/jquery-1.12.3.js"   crossorigin="anonymous"></script>');
 
 	code.val(  code.val() + tab(1) + '<script>');
 	/////
