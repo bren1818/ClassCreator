@@ -363,7 +363,7 @@ function getFormInnards(code, frmName){
 		var placeHolder = "";
 		var restrictDate= $(this).find('.item_date input[name="item_restrictDates"]').prop('checked');
 		
-		var list_type = $(this).find(' .type_list > input[type="radio"]:checked').val();
+		var list_type = $(this).find(' .type_list  input[type="radio"]:checked').val();
 		
 		var listObjectName = $(this).find('.type_list  .objectDetails input[name="objectName"]').val();
 		var listObjectKeyFunction = $(this).find('.type_list  .objectDetails input[name="objectKey"]').val();
@@ -429,6 +429,7 @@ function getFormInnards(code, frmName){
 			
 		}else if(type == "select"){
 			
+			console.log("type is select! sub type is: " + list_type);
 
 			if( list_type == "textarea"){
 			

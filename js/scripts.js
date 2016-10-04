@@ -76,6 +76,8 @@ function getType(type){
 
 
 function addFormRow(){
+		console.log("Add Form row");
+	
 	//$(function(){
 		var id = new Date().getTime();
 		var html = '<div id="formSection_' + id + '" class="formSection">' + 
@@ -346,6 +348,8 @@ function addFormRow(){
 }
 
 	function getFormVals(mode){
+		console.log("In getFormVals() ");
+		
 		if( mode == "advanced" || mode == "simple" ){
 			return encodeURI($('#variables').val());
 		}else{
@@ -376,7 +380,7 @@ function addFormRow(){
 						
 					//type_code
 					//type_list
-					'listType' : $(this).find('.type_list > input[type="radio"]:checked').val(),
+					'listType' : $(this).find('.type_list  input[type="radio"]:checked').val(),
 					'list' : encodeURI( $(this).find('.type_list textarea').val() ),
 					//type_repeat_section
 					//type_pattern
@@ -400,6 +404,8 @@ function addFormRow(){
 	}
 	
 	function makeSaveString(){
+		console.log("in makeSaveString()");
+		
 		//end generate button click
 		var m =  $('input[name="mode"]:checked').val();
 		var v = getFormVals( m );
@@ -408,12 +414,47 @@ function addFormRow(){
 			'mode' : 			m,
 			'keys' :  			encodeURI(JSON.stringify(v)),
 			'classname' : 		$('#className').val(),
+			'defaultSize' : 	$('#defaultVarcharLength').val(),
 			'listBy' : 			$('#includeListby').prop("checked"),
 			'getBy' : 			$('#includeGetby').prop("checked"),
 			'buildCRUD' : 		$('#buildCrud').prop("checked"),
 			'headerfooter' : 	$('#headerfooter').prop("checked"),
 			'buildAjax' : 		$('#buildAjax').prop("checked"),
-			'defaultSize' : 	$('#defaultVarcharLength').val()
+			'enableMulti' :		$('#multiDelete').prop("checked")
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			//add missing values...
 			
@@ -460,6 +501,7 @@ function makeCodeEditor(id, EditorMode){
 
 	
 function buildForm(){
+	console.log("in buildForm()");
 	var code = $('#generatedFORM');
 	var variables = $('#variables');
 	
@@ -688,6 +730,7 @@ $(function(){
 				buildDeleteForm();
 				buildCSVTable();
 				buildInclude();
+				
 				if( $('#buildAjax').prop('checked') == true  ){
 					buildAjaxTable();
 				}
@@ -1261,6 +1304,7 @@ $(function(){
 	
 	
 	$('#loadConfig').click(function(e){
+		console.log("in loadConfig click()");
 		e.preventDefault();
 		var loadStr = prompt("Please Paste load string");
 		if( loadStr != null){
@@ -1323,10 +1367,19 @@ $(function(){
 						$('#' + lastRow + ' .type_list > input[value="' + keys[k].listType + '"]').change();
 						
 						if(keys[k].listType == "object" ){
+							$('#' + lastRow + ' .type_list input[value="object"]').prop('checked', true);
 							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectName"]').val(  keys[k].listObjectName );
 							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectKey"]').val(  keys[k].listObjectKeyFunction );
 							$('#' + lastRow + ' .type_list  .objectDetails input[name="objectTitle"]').val(  keys[k].listObjectTitleFunction );
-						}	
+							
+							$('#' + lastRow + ' .type_list input[value="object"]').click();
+							
+						}	else{
+							$('#' + lastRow + ' .type_list input[value="textarea"]').prop('checked', true);
+							$('#' + lastRow + ' .type_list textarea').val( keys[k].list );
+							
+							$('#' + lastRow + ' .type_list input[value="textarea"]').click();
+						}
 							
 						$('#' + lastRow ).find('input[name="showAdmin"]').prop("checked", keys[k].showAdmin);
 						$('#' + lastRow ).find('input[name="useQuery"]').prop("checked", keys[k].useQuery);
@@ -1338,18 +1391,19 @@ $(function(){
 				}
 				
 				$('#defaultVarcharLength').val(  o.defaultSize );
-				$('input[name="includeListby"]').prop("checked", o.listBy);
-				//$('input[name="buildCrud"]').prop("checked", o.buildCrud);
-				$('input[name="includeGetby"]').prop("checked", o.getBy);
+				$('#includeListby').prop("checked", o.listBy);
+				$('#includeGetby').prop("checked", o.getBy);
+				$('#buildCrud').prop("checked", o.buildCRUD);
+				$('#headerfooter').prop("checked", o.headerfooter);
+				$('#buildAjax').prop("checked", o.buildAjax);
+				$('#multiDelete').prop("checked", o.enableMulti);
 				
-				$('input[name="headerfooter"]').prop("checked", o.headerfooter);
-				
-				if( o.buildCRUD ){
-					$('input[name="buildCrud"]').click();
-					if( o.buildAjax ){
-						$('input[name="buildAjax"]').click();
-					}
-				}
+				//if( o.buildCRUD ){
+				//	$('input[name="buildCrud"]').click();
+				//	if( o.buildAjax ){
+				//		$('input[name="buildAjax"]').click();
+				//	}
+				//}
 				
 			}
 			

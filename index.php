@@ -113,10 +113,10 @@
 					<a class="download" onClick="adminPageDownload('SQL')">Download SQL Script</a>
 				
 					
-					<h2 id="genFormTitle" style="display: none;">Generated Form</h2>
+					<h2 id="genFormTitle">Generated Form</h2>
 					<textarea id="generatedFORM" style="width: 100%; min-height: 50px;"></textarea>
 					
-					<div id="crudInterfaces" ">
+					<div id="crudInterfaces">
 						<h2><u>Admin</u></h2>
 						<textarea id="AdminPage" style="width: 100%; min-height: 50px;"></textarea>
 						<a class="download" onClick="adminPageDownload('Admin')">Download Admin Page</a>
