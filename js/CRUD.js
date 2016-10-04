@@ -1239,7 +1239,7 @@ function buildAjaxTable(){
 
 	
 	if( $('#multiDelete').prop('checked') == true ){
-		selFields += '<label>Muti Del: <input type="checkbox" class=\'multiDel\' name=\'muiltiDelete[]\' value=\'".$row["id"]."\' /></label>"';
+		selFields += '<label>Muti Del: <input type=\'checkbox\' class=\'multiDel\' name=\'muiltiDelete[]\' value=\'".$row["id"]."\' /></label>"';
 	}else{
 		selFields += '"';
 	}
