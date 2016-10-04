@@ -44,6 +44,8 @@ function buildInclude(){
 		code.val( code.val() + tab(3) + '<head>\r\n');
 		code.val( code.val() + tab(4) + '<title><?php echo $title; ?></title>\r\n');
 		code.val( code.val() + tab(4) + '<script   src="//code.jquery.com/jquery-1.12.3.js"   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<script   src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"   integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css" />\r\n');
 		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />\r\n');
 		code.val( code.val() + tab(4) + '<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>\r\n');	
 		code.val( code.val() + tab(3) + '</head>\r\n');
@@ -115,6 +117,8 @@ function buildAdminForm(){
 	if( !$('#headerfooter').prop('checked') ){
 		code.val( code.val() + '<!--Recommended include -->\r\n');
 		code.val( code.val() + '<script   src="//code.jquery.com/jquery-1.12.3.js"   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<script   src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"   integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="   crossorigin="anonymous"></script>\r\n');
+		code.val( code.val() + tab(4) + '<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/ui-lightness/jquery-ui.css" />\r\n');
 		code.val( code.val() + '<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />\r\n');
 		code.val( code.val() + '<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>\r\n');
 	}
@@ -303,7 +307,7 @@ function buildAdminForm(){
 		code.val( code.val() + tab(3) +	'			});\r\n');	
 					
 					
-		code.val( code.val() + tab(3) +	'			$.post( "/action' + oName + 'API.php", { fx: action, item: items })\r\n');	
+		code.val( code.val() + tab(3) +	'			$.post( "action' + oName + 'API.php", { fx: action, item: items })\r\n');	
 		code.val( code.val() + tab(3) +	'			  .done(function( data ) {\r\n');	
 		code.val( code.val() + tab(3) +	'				var resp = jQuery.parseJSON( data );\r\n');	
 
@@ -970,7 +974,7 @@ function buildAPICode(){
 	
 
 	code.val( code.val() + 'error_reporting(E_ALL);\r\n');
-	code.val( code.val() + 'include "includes.php";\r\n');
+	code.val( code.val() + 'include "include.php";\r\n');
 	code.val( code.val() + 'if (strtoupper($_SERVER["REQUEST_METHOD"]) == "POST"){\r\n');
 			//echo '<pre>'.print_r($_POST,true).'</pre>';
 	code.val( code.val() + '		$action = isset($_POST["fx"] ) ? $_POST["fx"] : "";\r\n');
@@ -1239,7 +1243,7 @@ function buildAjaxTable(){
 
 	
 	if( $('#multiDelete').prop('checked') == true ){
-		selFields += '<label>Muti Del: <input type=\'checkbox\' class=\'multiDel\' name=\'muiltiDelete[]\' value=\'".$row["id"]."\' /></label>"';
+		selFields += '<label>Muti Sel: <input type=\'checkbox\' class=\'multiSel\' name=\'muiltiSel[]\' value=\'".$row["id"]."\' /></label>"';
 	}else{
 		selFields += '"';
 	}
