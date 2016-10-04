@@ -80,59 +80,73 @@
 					
 					
 					<br />
-					<input type="checkbox" name="includeListby" value="1" checked/> Include List by Function<br />
-					<input type="checkbox" name="includeGetby" value="1" checked/> Include Get by Function (limit 1)<br />
+					<input type="checkbox" id="includeListby" name="includeListby" value="1" checked/><label for="includeListby">Include List by Function</label><br />
+					<input type="checkbox" id="includeGetby" name="includeGetby" value="1" checked/><label for="includeGetby">Include Get by Function (limit 1)</label><br />
 					
 					
-					Default varchar: <input type="number" name="defaultVarcharLength" id="defaultVarcharLength" min=1" value="45" />
+					<label for="">Default varchar:</label><input type="number" name="defaultVarcharLength" id="defaultVarcharLength" min=1" value="45" />
 					<br /><br />
-					<input type="checkbox" name="buildCrud" value="1" id="buildCrud" /> Build CRUD interfaces<br />
-					<input type="checkbox" name="headerfooter" value="1" id="headerfooter" checked/>Include Header & Footer in templates<br />
-					<div id="buildAjaxControls" style="display: none;"><input type="checkbox" name="buildAjax" value="1" id="buildAjax" /> Build Ajax Table interfaces and show toggles</div><br />
+					<input type="checkbox" name="buildCrud" value="1" id="buildCrud" checked/><label for="buildCrud">Build CRUD interfaces</label>
+					<br />
+					<input type="checkbox" name="headerfooter" value="1" id="headerfooter" checked/><label for="headerfooter">Include Header & Footer in templates</label>
+					<br />
+					
+					<div id="buildAjaxControls" >
+						<input type="checkbox" name="buildAjax" value="1" id="buildAjax" checked/><label for="buildAjax">Build Ajax Table interfaces and show toggles</label><br/>
+						<input type="checkbox" name="multiDelete" value="1" id="multiDelete" checked/><label for="multiDelete">Enable Multi Delete</label>
+					</div>
+					<br />
 					
 					<button id="generate">Generate Code</button>
 					<br /><br />
 				</div>
 				<button id="downloadEverything" style="display:none;">Download Everything!</button>
+				
 				<div class="col">
 					<h2>Generated Class</h2>
 					<p>Select editor and press F11 for full screen</p>
-					<textarea id="generatedCode" style="width: 100%; min-height: 250px; display:none;"></textarea>
+					<textarea id="generatedCode" style="width: 100%; min-height: 250px;"></textarea>
 					<a class="download" onClick="adminPageDownload('Class')">Download Class</a>
 					
 					<h2>Table SQL</h2>
-					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; display:none;"></textarea>
+					<textarea id="generatedSQL" style="width: 100%; min-height: 50px; "></textarea>
 					<a class="download" onClick="adminPageDownload('SQL')">Download SQL Script</a>
 				
 					
 					<h2 id="genFormTitle" style="display: none;">Generated Form</h2>
-					<textarea id="generatedFORM" style="width: 100%; min-height: 50px; display:none;"></textarea>
+					<textarea id="generatedFORM" style="width: 100%; min-height: 50px;"></textarea>
 					
-					<div id="crudInterfaces" style="display:none">
+					<div id="crudInterfaces" ">
 						<h2><u>Admin</u></h2>
-						<textarea id="AdminPage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<textarea id="AdminPage" style="width: 100%; min-height: 50px;"></textarea>
 						<a class="download" onClick="adminPageDownload('Admin')">Download Admin Page</a>
 						
 						<h2><u>CR</u>eate</h2>
-						<textarea id="CreatePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<textarea id="CreatePage" style="width: 100%; min-height: 50px; "></textarea>
 						<a class="download" onClick="adminPageDownload('Create')">Download Create Page</a>
 						
 						<h2><u>U</u>pdate</h2>
-						<textarea id="UpdatePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<textarea id="UpdatePage" style="width: 100%; min-height: 50px; "></textarea>
 						<a class="download" onClick="adminPageDownload('Update')">Download Update Page</a>
 						
 						<h2><u>D</u>elete</h2>
-						<textarea id="DeletePage" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<textarea id="DeletePage" style="width: 100%; min-height: 50px; "></textarea>
 						<a class="download" onClick="adminPageDownload('Delete')">Download Delete Page</a>
 						
 						<div class="ajaxCode">
 							<h2><u>A</u>jax</h2>
-							<textarea id="GenAjaxCode" style="width: 100%; min-height: 50px; display:none;"></textarea>
+							<textarea id="GenAjaxCode" style="width: 100%; min-height: 50px; "></textarea>
 							<a class="download" onClick="adminPageDownload('Ajax')">Download Ajax Page</a>
 						</div>
 						
+						<div class="apiCode">
+							<h2>A<u>P</u>I</h2>
+							<textarea id="GenAPICode" style="width: 100%; min-height: 50px;"></textarea>
+							<a class="download" onClick="adminPageDownload('API')">Download API Page</a>
+						</div>
+						
 						<h2>Export Code</h2>
-						<textarea id="ExportCode" style="width: 100%; min-height: 50px; display:none;"></textarea>
+						<textarea id="ExportCode" style="width: 100%; min-height: 50px; "></textarea>
 						<a class="download" onClick="adminPageDownload('Export')">Download Export (CSV) Page</a>
 						
 						

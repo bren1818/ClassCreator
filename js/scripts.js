@@ -83,8 +83,8 @@ function addFormRow(){
 				'<div class="tools"><button class="up"> &uarr; </botton><button class="down"> &darr; </button> <button class="delete">X</button></div>' +
 				
 				'<div class="ajaxControls">' +
-					'<p><input type="checkbox" name="showAdmin" value="1" checked/>: Show in Admin Interface? ' +
-					'<input type="checkbox" name="useQuery" value="1" checked/>: Use for search Querying </p>' +	
+					'<p><input type="checkbox" name="showAdmin" id="showAdmin_' + id + '" value="1" checked/><label for="showAdmin_' + id + '">: Show in Admin Interface?</label>' +
+					'<input type="checkbox" name="useQuery" id="useQuery_' + id + '" value="1" checked/><label for="useQuery_' + id + '">: Use for search Querying</label></p>' +	
 				'</div>' +
 
 				//Type
@@ -103,6 +103,7 @@ function addFormRow(){
 						'<option value="selectMultiple">Select Multiple</option>' +
 						'<option value="radioGroup">Radio Button Group</option>' +
 						'<option value="checkGroup">Checkbox Group</option>' +
+						'<option value="array">Array</option>' +
 					'</select>' +
 				'</div>' + 
 				
@@ -141,26 +142,26 @@ function addFormRow(){
 						defaultDate: new Date(1970, 00, 01)
 					});
 					*/
-					'Restrict Dates : <input type="checkbox" name="item_restrictDates"/>' + 
+					'<label for="item_restrictDates_' + id + '">Restrict Dates :</label><input type="checkbox" id="item_restrictDates_' + id + '" name="item_restrictDates"/>' + 
 					'<div class="item_restrict_dates" style="display: none;">' +
-						'<label>Start Year (0 for current year): <input name="startYr" type="number" value="0" placeholder="YYYY" /></label><br />' +
-						'<label>From: Cur Year (=/-) : <input name="from" type="number" value="0"/></label><br />' +
-						'<label>To: Cur Year (=/-): <input name="to" type="number" value="0" /></label>' +
+						'<label for="startYr_' + id + '">Start Year (0 for current year):</label><input id="startYr_' + id + '" name="startYr" type="number" value="0" placeholder="YYYY" /><br />' +
+						'<label for="fromyr_' + id + '">From: Cur Year (=/-):</label><input id="fromyr_' + id + '" name="from" type="number" value="0"/><br />' +
+						'<label for="toyr_' + id + '">To: Cur Year (=/-):</label><input id="toyr_' + id + '" name="to" type="number" value="0" />' +
 					'</div>' +
 				'</div>' +
 				
 				'<div class="type_text type_number type_textarea" style="display: none;">' + 
-					'<label>Restrict input length: <input type="checkbox" name="item_restrictLength"/></label>' + 
+					'<label for="item_restrictLength_' + id + '">Restrict input length:</label><input type="checkbox" name="item_restrictLength" id="item_restrictLength_' + id + '" />' + 
 					'<div class="item_restrict_length" style="display: none;">' +
-						'<label>Min Length: <input type="number" name="min_length" value="0"/></label><br />' +
-						'<label>Max Length: <input type="number" name="max_length" value="' + $('#defaultVarcharLength').val() + '" /></label>' +
+						'<label for="min_length_' + id + '">Min Length:</label><input type="number" name="min_length" id="min_length_' + id + '" value="0"/><br />' +
+						'<label for="max_length_' + id + '">Max Length:</label><input type="number" name="max_length" id="max_length_' + id + '" value="' + $('#defaultVarcharLength').val() + '" />' +
 					'</div>' +
 				'</div>' + 
 				
 				'<div class="type_number" style="display: none">' + 
-					'<label>Restrict input amount: <input type="checkbox" name="item_restrictAmount"/></label>' + 
+					'<label for="item_restrictAmount_' + id + '">Restrict input amount:</label><input type="checkbox" name="item_restrictAmount" id="item_restrictAmount_' + id + '" />' + 
 					'<div class="item_restrict_amount" style="display: none">' +
-						'<label>Min amount: <input type="number" name="min_amount" value="0"/> - Max amount: <input type="number" name="max_amount" value="0" />' +
+						'<label for="min_amount_' + id + '">Min amount: <input type="number" name="min_amount" id="min_amount_' + id + '" value="0"/></label> - <label for="max_amount_' + id + '">Max amount:</label><input type="number" name="max_amount" id="max_amount_' + id + '" value="0" />' +
 					'</div>' +
 				'</div>' + 
 				
@@ -171,7 +172,7 @@ function addFormRow(){
 				
 				'<div class="type_list" style="display: none">' + 
 					'<p>Feed From object or textarea?</p>' +
-					'<input type="radio" name="' + id + '_list_type" value="textarea" checked/> Textarea <input name="' + id + '_list_type" type="radio" value="object" /> Object<br />' +
+					'<label><input type="radio" name="' + id + '_list_type" value="textarea" checked/> Textarea</label> <label><input name="' + id + '_list_type" type="radio" value="object" /> Object</label><br />' +
 					'<textarea class="list" placeholder="comma seperated list of items"></textarea>' +  
 					
 					'<div class="objectDetails" style="display: none">' +
@@ -331,11 +332,11 @@ function addFormRow(){
 
 		$('#formSection_' + id + ' .type_list input[type="radio"]').change(function(event){
 			if( $(this).val() == "textarea" ){
-				$(this).parent().find('.objectDetails').hide();
-				$(this).parent().find('textarea.list').show();
+				$(this).parent().parent().find('.objectDetails').hide();
+				$(this).parent().parent().find('textarea.list').show();
 			}else{
-				$(this).parent().find('.objectDetails').show();
-				$(this).parent().find('textarea.list').hide();
+				$(this).parent().parent().find('.objectDetails').show();
+				$(this).parent().parent().find('textarea.list').hide();
 			}
 		});
 		
@@ -404,15 +405,18 @@ function addFormRow(){
 		var v = getFormVals( m );
 	
 		var SaveString = {
-			'mode' : m,
-			'keys' :  encodeURI(JSON.stringify(v)),
-			'classname' : $('#className').val(),
-			'listBy' : $('input[name="includeListby"]').prop("checked"),
-			'getBy' : $('input[name="includeGetby"]').prop("checked"),
-			'buildCRUD' : $('input[name="name="buildCrud"]').prop("checked"),
-			'headerfooter' : $('input[name="name="headerfooter"]').prop("checked"),
-			'buildAjax' : $('input[name="name="buildAjax"]').prop("checked"),
-			'defaultSize' : $('#defaultVarcharLength').val()
+			'mode' : 			m,
+			'keys' :  			encodeURI(JSON.stringify(v)),
+			'classname' : 		$('#className').val(),
+			'listBy' : 			$('#includeListby').prop("checked"),
+			'getBy' : 			$('#includeGetby').prop("checked"),
+			'buildCRUD' : 		$('#buildCrud').prop("checked"),
+			'headerfooter' : 	$('#headerfooter').prop("checked"),
+			'buildAjax' : 		$('#buildAjax').prop("checked"),
+			'defaultSize' : 	$('#defaultVarcharLength').val()
+			
+			//add missing values...
+			
 		}
 		$('#saveString').val( array2json(SaveString) );
 	}
@@ -446,8 +450,11 @@ function makeCodeEditor(id, EditorMode){
 			}
 		});
 	}else{
+		console.log( id );
+
 		cmInstances['_' + id].setValue( $("#" + id).val() );
 		$('#' + id).hide();
+		
 	}
 }
 
@@ -570,6 +577,12 @@ function adminPageDownload(type){
 		}else if(type=="Ajax"){
 			var name = 'ajaxTable' + className + '.php';
 			saveTextAsFile('GenAjaxCode', name);
+		}else if(type=="API"){
+			var name = 'action' + className + 'API.php';
+			saveTextAsFile('GenAPICode', name);	
+			
+			
+			
 		}else if(type == "Export"){
 			var name = 'export' + className + '.php';
 			saveTextAsFile('ExportCode', name);
@@ -678,6 +691,11 @@ $(function(){
 				if( $('#buildAjax').prop('checked') == true  ){
 					buildAjaxTable();
 				}
+				
+				if( $('#multiDelete').prop('checked') == true ){
+					buildAPICode();
+				}
+				
 				makeSaveString();
 				
 				//$('input[name="mode"][value="form"]').prop("checked", true);

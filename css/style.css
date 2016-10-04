@@ -273,9 +273,9 @@ html>body .pageContentSection.Expand {
 			display: block;
 			clear: both;
 		}
-		
+		/*
 		.ajaxControls,
-		.ajaxCode{ display: none; }
+		.ajaxCode{ display: none; }*/
 		.showAjaxControls .ajaxControls,
 		.showAjaxControls .ajaxCode{ display: block; }
 		
