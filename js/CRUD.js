@@ -233,6 +233,36 @@ function buildAdminForm(){
 		code.val( code.val() + '<option value="selectNone">Select None</option>');
 		code.val( code.val() + '<option value="inverse">Inverse Selected</option>');
 		code.val( code.val() + '<option value="delete">Delete</option>');
+		
+		
+		code.val( code.val() + '<option value="clone">Duplicate</option>');
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		//Clone
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		code.val( code.val() + '</select> checked Elements. <button id="processChecked" class="processSelected">Process</button></p>');
 	}
 	
@@ -279,18 +309,46 @@ function buildAdminForm(){
 		code.val( code.val() + tab(3) +	'			}else{\r\n');	
 		code.val( code.val() + tab(3) +	'				$(this).prop("checked", true);\r\n');	
 		code.val( code.val() + tab(3) +	'			}\r\n');	
-		code.val( code.val() + tab(3) +	'		}else if( action == "delete" ){\r\n');	
+		code.val( code.val() + tab(3) +	'		}else if( action == "delete" || action == "clone"){\r\n');	
 		code.val( code.val() + tab(3) +	'			//build list of elements for delete\r\n');	
 		code.val( code.val() + tab(3) +	'			if( $(this).prop("checked")  ){\r\n');	
 		code.val( code.val() + tab(3) +	'				items.push( $(this).val() );\r\n');	
 		code.val( code.val() + tab(3) +	'			}\r\n');	
 		code.val( code.val() + tab(3) +	'		}\r\n');	
+		
+		//CLONE
+		//CLONE
+		//CLONE
+		//CLONE
+		//CLONE
+		//CLONE
+		//CLONE
+		//CLONE
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		//code.val( code.val() + tab(3) +	'		
 		code.val( code.val() + tab(3) +	'	});\r\n');	
-			
+		
+		code.val( code.val() + tab(3) +		'var c = true;\r\n');
+		
 		code.val( code.val() + tab(3) +	'	if( action == "delete"){\r\n');	
-		code.val( code.val() + tab(3) +	'		var c = confirm("Are you sure you wish to delete the selected items?");\r\n');	
-				
+		code.val( code.val() + tab(3) +	'		 c = confirm("Are you sure you wish to delete the selected items?");\r\n');	
+		code.val( code.val() + tab(3) +	'	}\r\n');	
+
+		code.val( code.val() + tab(3) +	'	if( action == "clone"){\r\n');	
+		code.val( code.val() + tab(3) +	'		 c = confirm("Are you sure you wish to clone the selected items?");\r\n');	
+		code.val( code.val() + tab(3) +	'	}\r\n');	
+		
+		
+		code.val( code.val() + tab(3) +	'	if( action == "clone" || action == "delete"){\r\n');	
 		code.val( code.val() + tab(3) +	'		if( c ){\r\n');	
 		code.val( code.val() + tab(3) +	'			$(\'<div id="dialog" />\').html("<p><b>Processing " + action + "</b></p>").dialog({\r\n');	
 		code.val( code.val() + tab(3) +	'			  autoOpen: true,\r\n');	
@@ -312,7 +370,7 @@ function buildAdminForm(){
 		code.val( code.val() + tab(3) +	'				var resp = jQuery.parseJSON( data );\r\n');	
 
 		code.val( code.val() + tab(3) +	'				if( resp.count == resp.actioned){\r\n');	
-		code.val( code.val() + tab(3) +	'					window.alert("Delete Successful");\r\n');	
+		code.val( code.val() + tab(3) +	'					window.alert(action + " Successful");\r\n');	
 		code.val( code.val() + tab(3) +	'				}else{\r\n');	
 		code.val( code.val() + tab(3) +	'					window.alert("The list processed was: " + resp.list + ". The errors encountered: " + resp.errors );\r\n');	
 		code.val( code.val() + tab(3) +	'				}\r\n');	
@@ -320,7 +378,8 @@ function buildAdminForm(){
 		code.val( code.val() + tab(3) +	'				 location.reload();\r\n');	
 		code.val( code.val() + tab(3) +	'			  });\r\n');	
 		code.val( code.val() + tab(3) +	'		}\r\n');	
-		code.val( code.val() + tab(3) +	'	}\r\n');	
+		code.val( code.val() + tab(3) +	'		}\r\n');	
+		
 			
 			
 			
@@ -969,7 +1028,7 @@ function buildAPICode(){
 	code.val( code.val() + '\r\n');
 	code.val( code.val() + '*/\r\n');
 	
-	code.val( code.val() + '/*TO DO TO DO TO DO*/\r\n');
+	//code.val( code.val() + '/*TO DO TO DO TO DO*/\r\n');
 	
 	
 
@@ -988,7 +1047,7 @@ function buildAPICode(){
 	code.val( code.val() + '		for( $i = 0; $i < sizeof($items); $i++){\r\n');
 	code.val( code.val() + '			$list .= $items[$i].",";\r\n');
 	code.val( code.val() + '			if( $action == "delete"){\r\n');
-	code.val( code.val() + '				//delete from BLAH\r\n');
+
 	code.val( code.val() + '				$sql = $conn->prepare("DELETE FROM `' + oName + '` WHERE `id` = :ID;");\r\n');
 	code.val( code.val() + '				$sql->bindParam("ID", $items[$i]);\r\n');
 	code.val( code.val() + '				if( $sql->execute() ){\r\n');
@@ -996,9 +1055,37 @@ function buildAPICode(){
 	code.val( code.val() + '				}else{\r\n');
 	code.val( code.val() + '					$errors[] = "Could not delete ".$items[$i];\r\n');
 	code.val( code.val() + '				}\r\n');
+	
+	
+	code.val( code.val() + '			}else if($action == "clone"){\r\n');
+	
+	var selects = "";
+	var variables = getFormVals("form");
+	for(var obc = 0; obc < variables.length; obc++){
+		selects += "`" + variables[obc].name + "`";
+		if( obc + 1 < variables.length ){
+			selects += ", ";
+		}
+	}	
+		
+	
+	code.val( code.val() + '				$sql = $conn->prepare("INSERT into `' + oName + '` (' + selects + ') SELECT ' + selects + ' FROM `' + oName + '` WHERE `id` = :ID;");\r\n');
+	
+	
+	code.val( code.val() + '				$sql->bindParam("ID", $items[$i]);\r\n');
+	
+	code.val( code.val() + '				if( $sql->execute() ){\r\n');
+	code.val( code.val() + '					$count++;\r\n');
+	code.val( code.val() + '				}else{\r\n');
+	code.val( code.val() + '					$errors[] = "Could not duplicate ".$items[$i];\r\n');
+	code.val( code.val() + '				}\r\n');
+	
+	//clooooone
+	
 	code.val( code.val() + '			}else{\r\n');
 	code.val( code.val() + '				//some other action?\r\n');
 	code.val( code.val() + '			}\r\n');
+	
 	code.val( code.val() + '		}\r\n');
 	code.val( code.val() + '		echo json_encode( array("fx"=>$action, "count" => sizeof($items), "actioned" => $count, "list" => $list, "errors" => $errors ) ); \r\n');
 	code.val( code.val() + '	}else{\r\n');
